@@ -15,3 +15,71 @@ if (MSVC)
 else()
     add_executable(${PROJECT_NAME} ${all_srcs} )
 endif()
+
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${PROJECT_NAME}/bin)
+install(DIRECTORY assets DESTINATION ${PROJECT_NAME})
+
+# Build a single binary for both arm64 and x86_64 on macOS.
+# This also links the correct Library binaries for the SFML
+# dependency.
+set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+
+# Turn on compile warnings
+target_compile_options(${PROJECT_NAME} PRIVATE
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>:
+        -Wall
+        -Wextra
+        -Werror
+        -Wdouble-promotion
+        -Wshadow
+        -Wformat=2
+        -Wno-narrowing
+        -fPIC
+    >
+    $<$<CXX_COMPILER_ID:MSVC>:
+        /W3
+        /WX
+    >
+)
+
+# Compile our dependencies
+
+# SFML
+set(DEPS_DIR src/ext)
+set(SFML_DIR ${DEPS_DIR}/SFML)
+set(SFML_STATIC_LIBRARIES TRUE)
+set(BUILD_SHARED_LIBS FALSE)
+
+# EntityX
+set(ENTITYX_DIR ${DEPS_DIR}/entityx)
+set(ENTITYX_BUILD_SHARED 0 CACHE BOOL "Build entityx statically")
+set(ENTITYX_BUILD_TESTING 0 CACHE BOOL "Don't build entityx tests")
+
+# Json
+set(JSON_DIR ${DEPS_DIR}/json)
+
+# Windows compatibility for EntityX
+set_directory_properties(
+    PROPERTIES COMPILE_DEFINITIONS
+    _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS=1)
+
+add_subdirectory(${SFML_DIR}    EXCLUDE_FROM_ALL)
+add_subdirectory(${ENTITYX_DIR} EXCLUDE_FROM_ALL)
+add_subdirectory(${JSON_DIR}    EXCLUDE_FROM_ALL)
+
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${SFML_DIR}/include)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${ENTITYX_DIR})
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${JSON_DIR}/include)
+
+target_link_libraries(
+    ${PROJECT_NAME}
+    sfml-system
+    sfml-window
+    sfml-graphics
+    entityx
+    nlohmann_json
+)
+
+if (MSVC)
+    target_link_libraries(${PROJECT_NAME} sfml-main)
+endif()
