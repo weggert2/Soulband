@@ -1,6 +1,30 @@
-#include <iostream>
+#include <SFML/Graphics.hpp>
 
 int main()
 {
-    std::cout << "Hello Soulband!\n";
+    sf::RenderWindow window(
+        sf::VideoMode(sf::Vector2u(1024, 768)),
+        "Soulband");
+
+    sf::CircleShape shape;
+    shape.setRadius(40.0f);
+    shape.setPosition(sf::Vector2f(100.0f, 100.0f));
+
+    shape.setFillColor(sf::Color::Cyan);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
 }
