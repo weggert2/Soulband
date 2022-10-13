@@ -1,0 +1,9 @@
+[submodule "src/ext/entityx"]
+	path = src/ext/entityx
+	url = https://github.com/alecthomas/entityx.git
+[submodule "src/ext/SFML"]
+	path = src/ext/SFML
+	url = https://github.com/SFML/SFML.git
+[submodule "src/ext/json"]
+	path = src/ext/json
+	url = https://github.com/nlohmann/json.git
