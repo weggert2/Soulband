@@ -54,9 +54,18 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Vaults (from Angband tradition)
 
 ### Loot & Equipment
-- **Artifacts** - unique powerful items (Angband style)
-- **Random armor/weapons** - procedurally generated with varying stats
-- Rarity tiers and special properties
+- **Artifacts** - unique powerful items with fixed properties (Angband style)
+- **Random armor/weapons** - procedurally generated with varying properties
+  - Random stat requirements (STR, DEX, INT, FTH)
+  - Random stat scaling bonuses (how much bonus damage from your stats)
+  - Possible status effect buildup (bleed, poison, frost, etc.)
+  - Elemental damage types (fire, ice, lightning, holy, dark)
+  - Special properties and effects
+- **Catalysts for magic**:
+  - Staves for casting spells (INT-based)
+  - Talismans/Idols for casting prayers (FTH-based)
+  - May have their own stat requirements and scaling
+- **Equipment determines build viability** - finding a great STR weapon early might push you toward a STR build
 
 ### Combat & Resources
 - **Limited health potions**
@@ -67,13 +76,64 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Used for leveling up stats (spending gold)
 - Strategic resource management required
 
+**Status Effects & Buildup System** (inspired by Dark Souls):
+- **Buildup mechanics**: Multiple hits accumulate status until threshold is reached, then proc occurs
+- **Status types**:
+  - **Bleed** - builds up, then procs for large burst damage (% of max HP)
+  - **Poison** - builds up, then procs for damage over time (moderate)
+  - **Rot** - builds up, then procs for heavy damage over time (stronger than poison)
+  - **Frost** - builds up, then procs for burst damage + stamina damage/slow effect
+  - **Burn/Fire** - damage over time, possibly from fire-infused weapons
+  - Other status effects possible (sleep, madness, curse, etc.)
+- **Weapons and spells** can have innate status buildup values
+- **Light/fast weapons** build status quickly but deal less raw damage
+- **Heavy/slow weapons** build status slowly but deal more raw damage
+- Creates tactical choice: raw damage vs. status application
+
 ### Character Progression
-- **Exponential leveling costs** (inspired by Dark Souls)
+
+**Classless System:**
+- **No fixed classes** - build emerges from stat allocation
+- **Free stat allocation** at bonfires (spend gold per level)
+- **Respec possible** at any time (cost TBD)
+- Your effectiveness with equipment/magic depends entirely on your stats
+
+**Core Stats** (exact list TBD, inspired by Dark Souls):
+- **Strength (STR)** - required for heavy weapons, increases physical damage
+- **Dexterity (DEX)** - required for finesse weapons, increases attack speed/crit
+- **Intelligence (INT)** - required for sorceries, increases spell power
+- **Faith (FTH)** - required for prayers/miracles, increases prayer effectiveness
+- **Vitality (VIT)** - increases HP
+- **Endurance (END)** - increases stamina/equipment load
+- **Attunement (ATN)** - increases spell/prayer slots
+- Additional stats possible: Luck, Arcane, etc.
+
+**Equipment Requirements:**
+- **Weapons have stat requirements** - e.g., "Requires 24 STR, 12 DEX"
+- Can't equip or use effectively without meeting requirements
+- **Scaling bonuses** - weapons get damage bonuses from matching stats
+  - Greatswords: high STR scaling
+  - Rapiers: high DEX scaling
+  - Magic weapons: INT scaling
+  - Blessed weapons: FTH scaling
+
+**Magic System:**
+- **Spells (INT-based)** require:
+  - Staff equipped (catalyst)
+  - Sufficient INT stat
+  - Spell learned from scroll/tome
+  - Attunement slot available
+- **Prayers/Miracles (FTH-based)** require:
+  - Talisman/Idol equipped (catalyst)
+  - Sufficient FTH stat
+  - Prayer learned from prayer book
+  - Attunement slot available
+
+**Leveling Costs:**
+- **Exponential scaling** (inspired by Dark Souls)
   - Early levels: relatively cheap (hundreds of gold)
   - Later levels: extremely expensive (tens of thousands of gold)
-  - Each level provides stat increases (HP, damage, etc.)
-- **Allocate points to stats** at bonfires:
-  - Strength, Dexterity, Intelligence, Faith, Vitality, etc. (exact stats TBD)
+  - Each level grants 1 stat point to allocate
 - **The Level-Up Dilemma**:
   - Each level makes you stronger
   - But raises the cost for future levels
@@ -170,11 +230,41 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - Recipe/crafting unlocks?
 - Bestiary knowledge?
 
+### Stats & Build System
+- What is the exact stat list?
+- Starting stats for a new character?
+- Soft caps and hard caps on stats? (diminishing returns like Dark Souls?)
+- Can you respec? If so, what's the cost?
+- How does stat scaling work exactly on weapons?
+  - Letter grades (S/A/B/C/D/E)?
+  - Percentage bonuses?
+
+### Enemy Stats & Combat
+- Do enemies have stats similar to the player?
+- How do enemies scale as you go deeper in dungeons?
+- Resistances and weaknesses based on enemy type?
+- Do enemies have equipment with stat requirements too?
+- How does the combat system work mechanically?
+  - Real-time? Turn-based? Hybrid?
+  - Stamina system for attacks/dodges?
+  - Blocking/parrying mechanics?
+
+### Status Effects System
+- **Confirmed**: Buildup system with proc effects (bleed, poison, rot, frost, burn)
+- What are the exact buildup thresholds for each enemy type?
+- How much does buildup decay over time?
+- Can enemies apply status effects to the player?
+- Are some enemies immune to certain status effects?
+  - Undead immune to bleed/poison?
+  - Fire creatures immune to burn?
+- How does status buildup scale with weapon speed?
+- Exact proc effects and damage values for each status?
+
 ### Progression Balance
 - How to balance random loot variance with stat-based progression?
 - Prevent overpowered RNG combinations?
 - Ensure minimum viability (no unwinnable situations)?
-- Should equipment have level requirements?
+- How to prevent stat-checking (where you just need X stat to win)?
 
 ---
 
@@ -184,6 +274,8 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - **Gold as dual currency** - simultaneously your progression path and your lifeline
 - **Exponential consequences** - leveling up makes you stronger but raises the stakes
 - **No safe over-leveling** - you can't grind your way to safety, threshold keeps scaling
+- **Classless freedom** - your build emerges organically from stat choices and equipment found
+- **Stat requirements create specialization** - can't use everything, must commit to a build
 - **Vulnerable corpse runs** - the most dangerous moment is right after death
 - **Resource scarcity** - potions and rests are precious
 - **Build variety** - stats, equipment, and artifacts create unique playstyles
