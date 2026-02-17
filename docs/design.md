@@ -53,6 +53,22 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Monster pits (themed groups of enemies)
   - Vaults (from Angband tradition)
 
+**Dungeon Persistence & Corpse Runs:**
+- **Level persistence**: Up to 2 dungeon levels cached in memory
+  - **Last bonfire level**: The level containing the last bonfire you rested at
+  - **Death level**: The level where you died (contains your corpse)
+  - If both are the same level, only one level needs to be cached
+- **After death**, you respawn in town with 0 gold
+- **Corpse location**: Your gold remains at the exact spot you died
+- **Enemies respawn** on cached levels (full repopulation)
+- **Corpse run procedure**:
+  1. Use recall to return to your last dungeon bonfire
+  2. Navigate through respawned enemies to reach the level with your corpse
+  3. Retrieve corpse to recover all gold
+  4. High stakes: you're at 0 gold, one death away from run-over
+- **Level layouts persist** until corpse is retrieved or run ends
+- **New levels beyond cached ones** are generated normally if you descend further
+
 ### Loot & Equipment
 - **Artifacts** - unique powerful items with fixed properties (Angband style)
 - **Random armor/weapons** - procedurally generated with varying properties
@@ -67,13 +83,74 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - May have their own stat requirements and scaling
 - **Equipment determines build viability** - finding a great STR weapon early might push you toward a STR build
 
+**Loot Economy & Gold Sources:**
+- **Frequent item drops** - enemies drop equipment and consumables regularly (Angband feel)
+- **Low vendor value for most items** - equipment sells for very little or can't be sold at all
+  - Prevents "hoover everything and sell for safety net" gameplay
+  - Keeps loot exciting for build purposes without trivializing gold management
+- **Carrying capacity limits** - limited weight or inventory slots
+  - Forces strategic choices: "Do I take this sword to try, or keep room for valuable finds?"
+  - Prevents collecting everything to sell
+  - Makes town trips more deliberate
+- **Primary gold sources**:
+  - **Gems** - valuable items that drop occasionally, exist purely to sell (various sizes/values)
+  - **Direct gold drops** - rare but meaningful
+  - **Vault treasures** - high-value items found in dangerous vaults
+  - **Quest rewards** (if quests exist in the design)
+- **Depth-based vendor value** - vendor prices scale with dungeon depth
+  - Early dungeon items (levels 1-10): sell for 5-20 gold (almost worthless)
+  - Mid dungeon items (levels 20-30): sell for 100-500 gold
+  - Deep dungeon items (levels 40+): sell for 1,000+ gold
+  - Scaling matches the gold threshold progression
+  - Rewards risk-taking: going deep yields meaningful vendor income
+  - Early grinding can't easily maintain late-game thresholds
+
 ### Combat & Resources
+
+**Combat System:**
+- **Turn-based combat** (traditional roguelike style)
+- **Speed/Energy system** (Angband-style):
+  - Creatures accumulate energy based on speed stat
+  - Act when they have enough energy
+  - Faster creatures get multiple actions before slower ones
+  - Speed modified by stats, equipment, and effects
+- **Armor Class (AC) system**:
+  - All armor pieces (including shields) provide AC value
+  - **AC reduces damage taken** (not chance to hit)
+  - **Diminishing returns curve** (exact formula TBD)
+  - High AC provides meaningful protection but can't make you invincible
+  - More predictable than dodge-based systems, better for permadeath stakes
+- **Equipment choices**:
+  - Shield in offhand: more AC/defense
+  - Weapon/wand/catalyst in offhand: more damage/magic output
+  - Creates tactical tradeoff between offense and defense
+- **No stamina system** - actions are free, limited only by turn economy and speed
+- **Blocking mechanics** (future consideration, not MVP):
+  - Potential "blocking mode" stance: increases AC but reduces speed
+  - Tactical choice: turtle up for defense vs. maintain mobility
+  - Could be shield-specific ability
+
+**Resources:**
 - **Limited health potions**
 - **Limited mana potions**
 - **Bonfire mechanics**:
   - Rest at bonfire to restore health/mana
   - Resting respawns monsters
   - Used for leveling up stats (spending gold)
+  - **Bonfires exist in town and throughout dungeon levels**
+  - **1-2 bonfires per dungeon level**, randomly placed
+  - **Biased towards dangerous locations**:
+    - Near cleared monster rooms
+    - Near monster pits
+    - In or near vaults
+    - Far from stairs (deep in the level)
+    - Dead ends and isolated areas
+  - Placement rewards exploration and clearing dangerous encounters
+  - (TBD: Are bonfires pre-placed but inactive until area is cleared, or always active?)
+- **Recall mechanics** (scroll or ability):
+  - **From dungeon → town**: Returns you to town bonfire
+  - **From town → dungeon**: Returns you to last bonfire rested at in dungeon
+  - Enables strategic back-and-forth: delve deep, recall to town to shop/bank, recall back to continue
 - Strategic resource management required
 
 **Status Effects & Buildup System** (inspired by Dark Souls):
@@ -168,8 +245,18 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 
 **Banking & Storage:**
 - **Cannot bank gold** - all gold must be carried
-- **Can bank items** in town storage (specific mechanics TBD)
-- Banked items provide a form of insurance against run-over
+- **Home storage in town** - chest/stash in your home
+  - Limited to **50-75 item slots** (exact number TBD)
+  - Free to deposit and withdraw
+  - Can store anything: artifacts, equipment, consumables, gems
+  - Accessible anytime you're in town
+- **Storage is per-run only** - completely wiped on run-over death
+  - Does NOT provide insurance against run-over
+  - Purely for inventory management within a single run
+  - Useful for stashing artifacts you're not using yet, backup equipment, valuable gems before risky dives
+- **Items have weight values** (for potential future weight-based mechanics)
+  - Current storage limits by slot count, not weight
+  - Weight may be used for carrying capacity or other mechanics later
 
 **Strategic Implications:**
 - Every death puts you at immediate risk (0 gold = one death from game over)
@@ -208,21 +295,6 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - Do different item types have different base costs?
 - Can enchantments stack with inherent item properties?
 
-### Item Banking System
-- How does item storage in town work?
-- Is there a cost to store/retrieve items?
-- Storage capacity limits?
-- Can you retrieve banked items mid-run or only at start?
-- Which items can be banked? (artifacts, equipment, consumables, or all?)
-
-### Dungeon Persistence
-- Does dungeon layout persist after death until gold is retrieved?
-- Or is it regenerated each time you descend?
-- If regenerated, where does the corpse/gold appear?
-  - At entrance to the level where you died?
-  - Randomly placed in that level?
-  - Exact death location if layout persists?
-
 ### Meta-Progression
 - Does anything unlock permanently across runs?
 - Town upgrades?
@@ -240,14 +312,19 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Percentage bonuses?
 
 ### Enemy Stats & Combat
+- **Confirmed**: Turn-based combat with speed/energy system, AC reduces damage with diminishing returns
 - Do enemies have stats similar to the player?
 - How do enemies scale as you go deeper in dungeons?
 - Resistances and weaknesses based on enemy type?
-- Do enemies have equipment with stat requirements too?
-- How does the combat system work mechanically?
-  - Real-time? Turn-based? Hybrid?
-  - Stamina system for attacks/dodges?
-  - Blocking/parrying mechanics?
+- What is the exact AC damage reduction formula (diminishing returns curve)?
+
+**Future Consideration - Enemy Equipment (not MVP):**
+- Enemies could have visible equipment that explains their stats
+- "Orc wearing mithril shirt" telegraphs high AC
+- Could drop their equipped items (or just increase drop chance)
+- Might enable targeted farming
+- Could be gated behind Intelligence/Perception stat
+- **Implementation note**: Keep enemy stat system flexible to potentially add equipment layer later
 
 ### Status Effects System
 - **Confirmed**: Buildup system with proc effects (bleed, poison, rot, frost, burn)
@@ -265,6 +342,35 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - Prevent overpowered RNG combinations?
 - Ensure minimum viability (no unwinnable situations)?
 - How to prevent stat-checking (where you just need X stat to win)?
+
+---
+
+## Content Configuration
+
+**Data-Driven Design** (inspired by Angband):
+- **All game content should be configurable via text files**
+- Content types to be data-driven:
+  - **Monsters**: stats, abilities, drops, AI behavior
+  - **Artifacts**: unique items with fixed properties
+  - **Item templates**: weapon/armor types, base stats, possible properties
+  - **Vault templates**: special room layouts and contents
+  - **Room templates**: dungeon room patterns and features
+  - **Spells/Prayers**: magic abilities, costs, effects
+  - **Status effects**: buildup rates, proc effects, durations
+- **Benefits**:
+  - Easy content addition without code changes
+  - Simple balance iteration
+  - Community modding support
+  - Clear separation of data and logic
+- **Format**:
+  - **General content** (monsters, items, artifacts, spells): Structured text with comments (YAML/TOML)
+  - **Room/Vault templates**: ASCII art format (Angband-style)
+    - Visual layout using ASCII characters
+    - Can be embedded in TOML/YAML files
+    - Requires custom parsing system for layout
+    - Example: Draw walls as `#`, floors as `.`, doors as `+`, etc.
+    - Allows intuitive visual design of dungeon features
+- **Implementation note**: Design content systems to load from config files from the start
 
 ---
 
