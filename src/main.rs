@@ -12,12 +12,18 @@ async fn main() {
     input::set_cursor_grab(false);
 
     let tile_size: u32 = 32;
+
+    // Embedded font (faster, works from any directory)
     let font_bytes = include_bytes!(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/assets/fonts/ttf/JetBrainsMono-Regular.ttf",
     ));
-
     let font = text::load_ttf_font_from_bytes(font_bytes).expect("Failed to load font");
+
+    // Load font from disk (for comparison)
+    // let font = text::load_ttf_font("assets/fonts/ttf/JetBrainsMono-Regular.ttf")
+    //     .await
+    //     .expect("Failed to load font");
 
     let renderer: renderer::Renderer = renderer::Renderer::new(tile_size, font);
     let player: player::Player = player::Player::new();
