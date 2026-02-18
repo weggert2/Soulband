@@ -1,6 +1,7 @@
 use macroquad::color;
 use macroquad::window;
 
+mod sprite;
 mod game_state;
 mod player;
 
