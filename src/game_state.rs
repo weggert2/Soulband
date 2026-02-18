@@ -5,9 +5,7 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn new() -> Self {
-        GameState {
-            player: player::Player::new(),
-        }
+    pub fn new(player: player::Player) -> Self {
+        GameState { player }
     }
 }

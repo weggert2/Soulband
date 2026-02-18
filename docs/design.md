@@ -109,6 +109,17 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 
 **Combat System:**
 - **Turn-based combat** (traditional roguelike style)
+- **Multi-tile entities** (large monsters):
+  - Entities can occupy multiple grid cells (width × height)
+  - Player is always 1×1
+  - Large creatures (2×1, 2×2, etc.) physically occupy multiple spaces
+  - **Movement restrictions**: creatures can only move through spaces large enough to fit them
+    - Large monsters blocked by narrow hallways (tactical advantage for player)
+    - Creates defensive positioning opportunities
+  - **Frenzy mechanics**: when large monsters can't path to player normally
+    - Enter frenzy state and begin destroying walls/terrain to reach player
+    - Creates tension: narrow spaces are temporary safety, not permanent
+    - Player must keep moving as monster tears down defenses
 - **Speed/Energy system** (Angband-style):
   - Creatures accumulate energy based on speed stat
   - Act when they have enough energy
@@ -161,11 +172,17 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - **Rot** - builds up, then procs for heavy damage over time (stronger than poison)
   - **Frost** - builds up, then procs for burst damage + stamina damage/slow effect
   - **Burn/Fire** - damage over time, possibly from fire-infused weapons
+  - **Wet** - applied by water terrain, rain, water spells
+    - Increases susceptibility to lightning damage (damage multiplier)
+    - If hit by cold/frost while wet: chance to be frozen solid
+    - Frozen creatures lose multiple turns (stunned/immobilized)
+    - Wet status can extinguish burning status
   - Other status effects possible (sleep, madness, curse, etc.)
 - **Weapons and spells** can have innate status buildup values
 - **Light/fast weapons** build status quickly but deal less raw damage
 - **Heavy/slow weapons** build status slowly but deal more raw damage
 - Creates tactical choice: raw damage vs. status application
+- **Environmental interaction**: Some statuses interact with terrain and each other (wet + lightning, wet + cold = freeze)
 
 ### Character Progression
 
@@ -326,6 +343,65 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - Could be gated behind Intelligence/Perception stat
 - **Implementation note**: Keep enemy stat system flexible to potentially add equipment layer later
 
+**Future Consideration - Multi-Tile Targeting (not MVP):**
+- For multi-tile entities, allow targeting specific tiles (regions) of the creature
+- **Head/upper tile targeting**:
+  - Higher damage multiplier
+  - Lower hit chance
+  - Possible status effects (stun, blind)
+- **Body/lower tile targeting**:
+  - More reliable hit chance
+  - Lower damage (more armor)
+  - Possible movement-impairing effects if damaged
+- **Tactical depth**:
+  - Risk/reward decision: reliable hits vs. high damage
+  - Positional advantages (elevation) could affect targeting
+  - Different weapon types might favor different targeting styles
+- **Implementation considerations**:
+  - Could be as simple as hit chance/damage modifiers per tile
+  - Or as complex as per-tile health and armor values
+  - Start simple, expand if it proves fun
+
+**Future Consideration - Environmental Interactions (not MVP):**
+Inspired by Brogue's emergent environmental gameplay:
+- **Fire mechanics**:
+  - Fire spreads through flammable terrain (grass, foliage, wooden structures)
+  - Burns creatures standing in it (damage over time)
+  - Creates smoke/obscurement
+  - Fire spells and attacks can ignite terrain
+  - Water extinguishes fire
+- **Terrain transformation**:
+  - Lava can be cooled (ice spells, water) to create walkable ground
+  - Water can be frozen (ice spells) to create temporary walkable bridges
+  - Ice can be melted back into water
+  - Temporary bridges/platforms that may expire after time
+- **Water terrain**:
+  - Deep water is impassable without swimming/levitation
+  - Shallow water slows movement
+  - Fish or aquatic creatures inhabit water
+  - Electric damage spreads through water (chain effects)
+  - Can extinguish burning terrain or creatures
+  - Can be frozen into walkable ice bridges
+- **Gas/vapor clouds**:
+  - Poison gas clouds deal damage and obscure vision
+  - Flammable gases can be ignited for explosions
+  - Clouds dissipate over time or blown by wind
+  - Can be created by spells, items, or environment
+- **Chasms and pits**:
+  - **Falling into a chasm transports you to the next dungeon level** (forced descent)
+  - Creates risk: unplanned descent may skip loot/bonfires
+  - Can push/knock enemies into them (instant kill/removal)
+  - Some creatures can fly over them
+  - Bridges can be created or destroyed
+  - Strategic implications: escape route vs. accidental descent
+- **Tactical implications**:
+  - Environmental damage affects both player and enemies
+  - Creates emergent tactics (lure enemies into water, then zap with lightning)
+  - Terrain can be weaponized (ignite grass between you and pursuing enemies)
+  - Risk of friendly fire from environmental effects
+  - Adds positioning strategy beyond simple melee range
+- **Implementation note**: Start with basic floor/wall tiles, add environmental layers later
+
 ### Status Effects System
 - **Confirmed**: Buildup system with proc effects (bleed, poison, rot, frost, burn)
 - What are the exact buildup thresholds for each enemy type?
@@ -342,6 +418,98 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - Prevent overpowered RNG combinations?
 - Ensure minimum viability (no unwinnable situations)?
 - How to prevent stat-checking (where you just need X stat to win)?
+
+---
+
+## Debug/Wizard Mode
+
+**Purpose**: Enable rapid testing and iteration without playing through the full game.
+
+**Activation**: Toggle via command-line flag, config setting, or in-game key combo (e.g., Ctrl+Shift+D)
+
+**Core Debug Commands**:
+
+**Level & World Manipulation:**
+- `wizard_goto_depth <N>` - Jump to specific dungeon depth
+- `wizard_regen_level` - Regenerate current dungeon level with new layout
+- `wizard_reveal_map` - Reveal entire current level map
+- `wizard_spawn_bonfire` - Place bonfire at current location or cursor
+- `wizard_spawn_stairs` - Place up/down stairs
+- `wizard_spawn_room <type>` - Generate specific room type (vault, monster pit, etc.)
+
+**Entity Spawning:**
+- `wizard_spawn_monster <name/id> [count]` - Spawn specific monster(s) at cursor
+- `wizard_spawn_monster_random <depth>` - Spawn random monster for given depth
+- `wizard_kill_monsters` - Kill all monsters on current level
+- `wizard_kill_target` - Kill monster under cursor
+
+**Item & Loot:**
+- `wizard_spawn_item <name/id>` - Spawn specific item at cursor
+- `wizard_spawn_artifact <name/id>` - Spawn specific artifact
+- `wizard_spawn_gem <value>` - Spawn gem worth X gold
+- `wizard_identify_all` - Identify all items in inventory
+- `wizard_max_inventory` - Fill inventory with useful items
+
+**Player Modification:**
+- `wizard_give_gold <amount>` - Add gold to player
+- `wizard_set_stat <stat> <value>` - Set specific stat (STR, DEX, INT, etc.)
+- `wizard_set_level <N>` - Set player level
+- `wizard_set_speed <N>` - Modify player speed stat
+- `wizard_heal_full` - Restore full HP and mana
+- `wizard_kill_player` - Instantly kill the player (test death mechanics)
+- `wizard_set_threshold <amount>` - Manually set death gold threshold
+- `wizard_toggle_immortal` - Toggle invulnerability
+
+**Status Effects & Combat:**
+- `wizard_apply_status <status> [target]` - Apply status effect to player or target
+- `wizard_clear_status` - Clear all status effects from player
+- `wizard_set_hp <amount>` - Set player HP to specific value
+- `wizard_set_mana <amount>` - Set player mana to specific value
+
+**Equipment & Build Testing:**
+- `wizard_spawn_weapon <type> [+enhancement]` - Generate weapon with specific enhancement level
+- `wizard_spawn_armor <type> [+enhancement]` - Generate armor piece
+- `wizard_give_spell <name>` - Learn specific spell/prayer
+- `wizard_respec` - Free stat respec
+
+**Visualization & Diagnostics:**
+- `wizard_show_pathfinding` - Visualize monster pathfinding on screen
+- `wizard_show_ai_state` - Display AI state for all monsters
+- `wizard_show_fov` - Show field-of-view calculations
+- `wizard_log_combat` - Enable detailed combat calculation logging
+- `wizard_show_stats` - Display detailed stats panel
+- `wizard_show_spawns` - Highlight valid spawn locations for entities
+
+**Game Speed & Time:**
+- `wizard_set_gamespeed <multiplier>` - Speed up or slow down game time
+- `wizard_step_turn` - Advance exactly one game turn (for precise testing)
+- `wizard_pause_ai` - Freeze all monster AI
+
+**Corpse Run & Death Testing:**
+- `wizard_spawn_corpse <gold>` - Place test corpse with specific gold amount
+- `wizard_force_death` - Trigger death sequence with current gold
+- `wizard_clear_corpse` - Remove existing corpse
+- `wizard_goto_last_bonfire` - Teleport to last rested bonfire
+
+**Teleportation:**
+- `wizard_teleport <x> <y>` - Teleport to specific coordinates
+- `wizard_teleport_cursor` - Teleport to cursor location
+- `wizard_goto_town` - Return to town
+
+**Implementation Notes:**
+- Commands can be accessed via:
+  - Console/command line interface (press `:` or similar)
+  - Quick-access menu (press `?` in wizard mode)
+  - Keybindings for frequently used commands
+- All commands should be clearly marked as debug/wizard mode in UI
+- Consider logging all wizard commands to a debug log file
+- Wizard mode should be disabled in release builds or gated behind flag
+- Some commands might have shortened aliases (e.g., `wiz_goto`, `wiz_spawn`)
+
+**Safety & Best Practices:**
+- Wizard mode saves should be clearly marked (separate save slot?)
+- Option to disable wizard mode saves from counting toward achievements (if meta-progression exists)
+- Clear visual indicator when wizard mode is active (colored border, status text)
 
 ---
 

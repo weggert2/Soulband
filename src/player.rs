@@ -1,20 +1,23 @@
+use crate::entity::Entity;
 use crate::sprite::Sprite;
 
 pub struct Player {
-    pub x: i32,
-    pub y: i32,
-    pub sprite: Sprite,
+    pub entity: Entity,
 }
 
 impl Player {
     pub fn new() -> Self {
         Player {
-            x: 0,
-            y: 0,
-            sprite: Sprite {
-                glyph: '@',
-                color: macroquad::color::WHITE,
-                tile_id: 0,
+            entity: Entity {
+                x: 10,
+                y: 10,
+                width: 1,
+                height: 1,
+                sprite: Sprite {
+                    glyph: '@',
+                    color: macroquad::color::WHITE,
+                    tile_id: 0,
+                },
             },
         }
     }
