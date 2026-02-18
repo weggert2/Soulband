@@ -18,12 +18,21 @@ impl Renderer {
         let screen_y: u32 = entity.y * self.tile_size;
 
         // ascii only for now
-        let font_size: u32 = self.tile_size * entity.height;
+        let font_size: f32 = (self.tile_size * entity.height) as f32 * 0.8;
         let glyph_str: String = entity.sprite.glyph.to_string();
+
+        // Measure text dimensions to center it properly
+        let text_dimensions: text::TextDimensions =
+            text::measure_text(&glyph_str, Some(&self.font), font_size as u16, 1.0);
+
+        let x_offset: f32 = 0.5 * (self.tile_size as f32 - text_dimensions.width);
+        let descent: f32 = text_dimensions.height - text_dimensions.offset_y;
+        let y_offset: f32 = 0.5 * self.tile_size as f32 + 1.25 * descent;
+
         text::draw_text_ex(
             &glyph_str,
-            screen_x as f32,
-            (screen_y + font_size) as f32,
+            screen_x as f32 + x_offset,
+            screen_y as f32 + y_offset,
             text::TextParams {
                 font: Some(&self.font),
                 font_size: font_size as u16,
