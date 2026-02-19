@@ -16,7 +16,7 @@ impl Player {
                 sprite: Sprite {
                     glyph: '@',
                     color: macroquad::color::WHITE,
-                    tile_id: 1,
+                    tile_id: 391,
                 },
             },
         }

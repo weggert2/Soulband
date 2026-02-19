@@ -7,6 +7,7 @@ async fn main() {
     let mut zoom: f32 = 1.0;
     let mut last_move_time: f64 = 0.0;
     let move_delay: f64 = 0.1; // Delay in seconds between moves
+    let mut last_mouse_pos: Option<(f32, f32)> = None;
 
     // Load tileset.
     let tileset = texture::load_texture("assets/tiles.png")
@@ -44,7 +45,7 @@ async fn main() {
             pan_y = mouse_pos.1 - (mouse_pos.1 - pan_y) * (zoom / old_zoom);
         }
 
-        // Handle panning with WASD or mouse drag
+        // Handle panning with WASD
         let pan_speed = 10.0;
         if input::is_key_down(input::KeyCode::W) {
             pan_y += pan_speed;
@@ -57,6 +58,18 @@ async fn main() {
         }
         if input::is_key_down(input::KeyCode::D) {
             pan_x -= pan_speed;
+        }
+
+        // Handle panning with mouse drag (right mouse button)
+        if input::is_mouse_button_down(input::MouseButton::Right) {
+            let current_mouse = input::mouse_position();
+            if let Some(last_pos) = last_mouse_pos {
+                pan_x += current_mouse.0 - last_pos.0;
+                pan_y += current_mouse.1 - last_pos.1;
+            }
+            last_mouse_pos = Some(current_mouse);
+        } else {
+            last_mouse_pos = None;
         }
 
         // Handle mouse click to select tile
@@ -78,7 +91,8 @@ async fn main() {
         }
 
         // Handle Shift+Up/Down for zoom
-        let shift_held = input::is_key_down(input::KeyCode::LeftShift) || input::is_key_down(input::KeyCode::RightShift);
+        let shift_held = input::is_key_down(input::KeyCode::LeftShift)
+            || input::is_key_down(input::KeyCode::RightShift);
 
         if shift_held {
             if input::is_key_pressed(input::KeyCode::Up) {
@@ -159,7 +173,8 @@ async fn main() {
 
             if tile_screen_y < margin {
                 pan_y += margin - tile_screen_y;
-            } else if tile_screen_y + tile_size_scaled > screen_h - margin - 40.0 { // Extra margin for text at bottom
+            } else if tile_screen_y + tile_size_scaled > screen_h - margin - 40.0 {
+                // Extra margin for text at bottom
                 pan_y -= (tile_screen_y + tile_size_scaled) - (screen_h - margin - 40.0);
             }
         }
@@ -176,7 +191,10 @@ async fn main() {
             pan_y,
             color::WHITE,
             texture::DrawTextureParams {
-                dest_size: Some(macroquad::math::Vec2::new(tileset_w * scale, tileset_h * scale)),
+                dest_size: Some(macroquad::math::Vec2::new(
+                    tileset_w * scale,
+                    tileset_h * scale,
+                )),
                 ..Default::default()
             },
         );
@@ -188,11 +206,18 @@ async fn main() {
         let rect_y = pan_y + tile_y * tileset_tile_size * scale;
         let rect_size = tileset_tile_size * scale;
 
-        macroquad::shapes::draw_rectangle_lines(rect_x, rect_y, rect_size, rect_size, 3.0, color::RED);
+        macroquad::shapes::draw_rectangle_lines(
+            rect_x,
+            rect_y,
+            rect_size,
+            rect_size,
+            3.0,
+            color::RED,
+        );
 
         // Draw instructions
         text::draw_text(
-            &format!("tile_id: {} | Arrows: Navigate | WASD: Pan | Shift+Up/Down or Wheel: Zoom ({:.1}x)", selected_tile_id, zoom),
+            &format!("tile_id: {} | Arrows: Navigate | WASD/Right Mouse Drag: Pan | Shift+Up/Down or Wheel: Zoom ({:.1}x)", selected_tile_id, zoom),
             10.0,
             screen_h - 20.0,
             20.0,
