@@ -9,10 +9,10 @@ impl Player {
     pub fn new() -> Self {
         Player {
             entity: Entity {
-                x: 10,
-                y: 10,
-                width: 1,
-                height: 1,
+                x: 10.0,
+                y: 10.0,
+                width: 1.0,
+                height: 1.0,
                 sprite: Sprite {
                     glyph: '@',
                     color: macroquad::color::WHITE,

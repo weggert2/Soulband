@@ -1,21 +1,21 @@
 use crate::sprite::Sprite;
 
 pub struct Entity {
-    pub x: u32,
-    pub y: u32,
-    pub width: u32,
-    pub height: u32,
+    pub x: f32,
+    pub y: f32,
+    pub width: f32,
+    pub height: f32,
     pub sprite: Sprite,
 }
 
 impl Entity {
-    pub fn new(x: u32, y: u32, width: u32, height: u32, sprite: Sprite) -> Self {
+    pub fn new(x: f32, y: f32, width: f32, height: f32, sprite: Sprite) -> Self {
         Entity {
-            x,
-            y,
-            width,
-            height,
-            sprite,
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            sprite: sprite,
         }
     }
 }
