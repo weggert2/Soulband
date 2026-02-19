@@ -2,14 +2,7 @@
 
 ## Current Priority
 
-### 1. Get graphics and tilesets working
-- Learn how to load and use tilesets in macroquad
-- Implement tileset rendering system
-- Load tileset images (walls, floors, etc.)
-- Display tiles on the grid
-- Test with basic dungeon layout
-
-### 2. Create basic dungeon level with tiles
+### 1. Create basic dungeon level with tiles
 - Design a tile system (floor, wall, door types)
 - Create a simple level data structure (2D grid)
 - Implement basic level generation (start with simple rooms + corridors)
@@ -71,5 +64,7 @@
 
 ## Notes
 - See `/docs/design.md` for full game design
-- Current status: Basic rendering works, player entity displays
+- Current status: Tileset rendering works, player character displays with tile_id 391
 - Using macroquad for graphics and window management
+- Tileset: 8192x2048, 64x64 tiles, 128 tiles per row
+- Utility: `cargo run --bin tile_selector` to browse tileset
