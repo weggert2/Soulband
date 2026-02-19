@@ -3,5 +3,13 @@ name = "soulband"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "soulband"
+path = "src/main.rs"
+
+[[bin]]
+name = "tile_selector"
+path = "src/tile_selector.rs"
+
 [dependencies]
 macroquad = "0.4"

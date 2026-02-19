@@ -28,6 +28,13 @@
 - Make the game turn-based (wait for player input before advancing)
 - Test movement with the current rendered player entity
 
+### Zoom System
+- Implement camera zoom in/out functionality
+- Allow player to zoom in to see tile details better
+- Allow player to zoom out to see more of the map
+- Add keybindings for zoom controls (+/- or mouse wheel)
+- Ensure UI elements scale appropriately with zoom
+
 ### Later Features
 - Add basic monsters that can be seen on the map
 - Implement turn-based combat system
