@@ -2,12 +2,12 @@
 
 ## Current Priority
 
-### 1. Implement basic movement and input handling
-- Add keyboard input handling (arrow keys/WASD/vi-keys)
-- Implement player movement logic
-- Add collision detection (can't move through walls)
-- Make the game turn-based (wait for player input before advancing)
-- Test movement with the current rendered player entity
+### 1. Get graphics and tilesets working
+- Learn how to load and use tilesets in macroquad
+- Implement tileset rendering system
+- Load tileset images (walls, floors, etc.)
+- Display tiles on the grid
+- Test with basic dungeon layout
 
 ### 2. Create basic dungeon level with tiles
 - Design a tile system (floor, wall, door types)
@@ -20,10 +20,45 @@
 ---
 
 ## Next Steps (After Current Priority)
+
+### Implement basic movement and input handling
+- Add keyboard input handling (arrow keys/WASD/vi-keys)
+- Implement player movement logic
+- Add collision detection (can't move through walls)
+- Make the game turn-based (wait for player input before advancing)
+- Test movement with the current rendered player entity
+
+### Later Features
 - Add basic monsters that can be seen on the map
 - Implement turn-based combat system
 - Add player stats (HP, basic attributes)
 - Create UI overlay (show HP, gold, etc.)
+
+---
+
+## Design & Architecture (Needs Planning)
+
+### Character Creation
+- Define what's needed for character creation system
+- Add specifications to design doc
+- Determine character attributes, classes, or customization options
+
+### Save System
+- Design save/load architecture
+- Determine what game state needs to be persisted
+- Choose save format (JSON, binary, etc.)
+- Implement save/load functionality
+
+### Top Menu System
+- Create in-game menu for saving/quitting
+- Design menu UI and navigation
+- Add menu keybindings (ESC, etc.)
+
+### UI Design (Major TODO - Needs Own Design Doc)
+- Create comprehensive UI/UX design document
+- Define all UI elements needed (HUD, menus, inventory, character sheet, etc.)
+- Plan UI layout and visual style
+- Consider accessibility and usability
 
 ---
 
