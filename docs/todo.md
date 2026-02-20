@@ -44,15 +44,18 @@
 - Determine character attributes, classes, or customization options
 
 ### Save System
-- Design save/load architecture
-- Determine what game state needs to be persisted
-- Choose save format (JSON, binary, etc.)
-- Implement save/load functionality
+- Determine what game state needs to be persisted (player, dungeon, inventory, etc.)
+- Choose serialization approach (serde with JSON/RON/bincode, custom format, etc.)
+- Design save file format and structure
+- Implement save functionality (File menu -> Save)
+- Implement load functionality (File menu -> Load)
+- Add save file location/management (single save vs multiple saves)
+- Error handling for corrupted/missing save files
 
 ### Top Menu System
-- Create in-game menu for saving/quitting
-- Design menu UI and navigation
-- Add menu keybindings (ESC, etc.)
+- Add Save/Load option implementations (see Save System above)
+- Consider adding Edit/View/Help menus if needed
+- Add menu keybindings (ESC to close menus, etc.)
 
 ### UI Design (Major TODO - Needs Own Design Doc)
 - Create comprehensive UI/UX design document

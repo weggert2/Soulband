@@ -1,5 +1,6 @@
+use egui_macroquad::egui;
 use macroquad::shapes;
-use macroquad::text::{self, Font};
+use macroquad::text::Font;
 use macroquad::texture::Texture2D;
 
 use crate::entity::Entity;
@@ -21,7 +22,12 @@ impl Renderer {
     /// * `tileset_tile_size` - Size of each tile in the tileset texture
     /// * `font` - Font to use for text rendering
     /// * `tileset` - Texture containing the tile graphics
-    pub fn new(game_tile_size: f32, tileset_tile_size: f32, font: Font, tileset: Texture2D) -> Self {
+    pub fn new(
+        game_tile_size: f32,
+        tileset_tile_size: f32,
+        font: Font,
+        tileset: Texture2D,
+    ) -> Self {
         Renderer {
             game_tile_size,
             tileset_tile_size,
@@ -107,6 +113,38 @@ impl Renderer {
                 ..Default::default()
             },
         );
+    }
+
+    /// Draws the top menu bar with File menu
+    ///
+    /// Renders a menu bar at the top of the window using egui. Currently includes:
+    /// - File menu with Save (TODO), Load (TODO), and Quit options
+    ///
+    /// The Quit option will immediately exit the application. Save and Load options
+    /// are placeholders pending implementation of serialization system.
+    pub fn draw_menu_bar(&self) {
+        egui_macroquad::ui(|egui_ctx| {
+            egui::TopBottomPanel::top("menu_bar").show(egui_ctx, |ui| {
+                egui::menu::bar(ui, |ui| {
+                    ui.menu_button("File", |ui| {
+                        if ui.button("Save").clicked() {
+                            // TODO: Implement save functionality
+                            ui.close_menu();
+                        }
+                        if ui.button("Load").clicked() {
+                            // TODO: Implement load functionality
+                            ui.close_menu();
+                        }
+                        ui.separator();
+                        if ui.button("Quit").clicked() {
+                            std::process::exit(0);
+                        }
+                    });
+                });
+            });
+        });
+
+        egui_macroquad::draw();
     }
 
     /// Draws a debug grid overlay showing tile boundaries

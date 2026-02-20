@@ -2,6 +2,7 @@
 name = "soulband"
 version = "0.1.0"
 edition = "2021"
+default-run = "soulband"
 
 [[bin]]
 name = "soulband"
@@ -13,3 +14,4 @@ path = "src/tile_selector.rs"
 
 [dependencies]
 macroquad = "0.4"
+egui-macroquad = "0.17"

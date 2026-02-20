@@ -28,7 +28,8 @@ async fn main() {
         .await
         .expect("Failed to load tileset");
 
-    let renderer: renderer::Renderer = renderer::Renderer::new(game_tile_size, tileset_tile_size, font, tileset);
+    let renderer: renderer::Renderer =
+        renderer::Renderer::new(game_tile_size, tileset_tile_size, font, tileset);
     let player: player::Player = player::Player::new();
     let game_state: game_state::GameState = game_state::GameState::new(player);
 
@@ -37,6 +38,8 @@ async fn main() {
 
         renderer.draw_entity(&game_state.player.entity, use_tiles);
         renderer.draw_grid();
+        renderer.draw_menu_bar();
+
         window::next_frame().await;
     }
 }
