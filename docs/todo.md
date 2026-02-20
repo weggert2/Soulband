@@ -65,6 +65,17 @@
 
 ---
 
+## Learning & Exploration
+
+### Animated Loading Screen with Threading
+- Implement proper threaded asset loading with animated progress
+- Learn about Rust threading: `std::thread::spawn`, channels, and GPU context limitations
+- Challenge: Background thread decodes PNG while main thread shows animated "Loading..." with dots
+- Requires understanding of OpenGL thread-local contexts (GPU upload must be on main thread)
+- Good exercise in async/threading patterns for future features (streaming assets, background saves, etc.)
+
+---
+
 ## Notes
 - See `/docs/design.md` for full game design
 - Current status: Tileset rendering works, player character displays with tile_id 391

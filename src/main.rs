@@ -5,6 +5,7 @@ mod game_state;
 mod player;
 mod renderer;
 mod sprite;
+mod ui;
 
 #[macroquad::main("Soulband")]
 async fn main() {
@@ -23,13 +24,18 @@ async fn main() {
     )))
     .expect("Failed to load font");
 
-    // Load tileset.
+    // Show loading screen
+    ui::draw_loading_screen(&font);
+    window::next_frame().await;
+
+    // Load tileset
     let tileset = texture::load_texture("assets/tiles.png")
         .await
         .expect("Failed to load tileset");
 
     let renderer: renderer::Renderer =
         renderer::Renderer::new(game_tile_size, tileset_tile_size, font, tileset);
+        
     let player: player::Player = player::Player::new();
     let game_state: game_state::GameState = game_state::GameState::new(player);
 
