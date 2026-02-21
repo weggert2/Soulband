@@ -33,6 +33,12 @@
 - Implement turn-based combat system
 - Add player stats (HP, basic attributes)
 - Create UI overlay (show HP, gold, etc.)
+- Implement message log system for displaying game events
+  - Show player actions ("You hit the goblin for 10 damage", "You open the door", etc.)
+  - Show environmental events ("The trap activates!", "You hear a distant roar")
+  - Display unhandled key presses during development
+  - Scrollable history of recent messages
+  - Consider color-coding by message type (combat, environment, errors, etc.)
 
 ---
 

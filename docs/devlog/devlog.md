@@ -55,3 +55,7 @@ Added JetBrains Mono font to the menu bar. Compared the default egui font with J
 <td><img src="jetbrains-menu-font.png" alt="JetBrains Mono font" height="150"><br><em>JetBrains Mono font</em></td>
 </tr>
 </table>
+
+### Tile vs ASCII Rendering Toggle
+
+Added an Options menu to the menu bar with a "Use Tiles" toggle. This allows switching between tile-based rendering (using the 64x64 tileset) and ASCII glyph rendering at runtime. The checkmark indicator (✓) shows when tile mode is active.

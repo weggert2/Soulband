@@ -37,11 +37,12 @@ async fn main() {
         renderer::Renderer::new(game_tile_size, tileset_tile_size, font, tileset);
 
     let player: player::Player = player::Player::new();
-    let game_state: game_state::GameState = game_state::GameState::new(player);
+    let mut game_state: game_state::GameState = game_state::GameState::new(player);
 
     loop {
         window::clear_background(color::BLACK);
 
+        game_state.handle_input();
         renderer.draw_entity(&game_state.player.entity, use_tiles);
         renderer.draw_grid();
         ui::draw_menu_bar(&mut use_tiles, true);
