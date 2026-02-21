@@ -20,7 +20,7 @@ Built a tile_selector utility (`cargo run --bin tile_selector`) to browse the ti
 
 ### Menu Bar with egui-macroquad
 
-Added a top menu bar using egui-macroquad! The File menu has Save, Load, and Quit options. Only Quit is functional right now - it calls `std::process::exit(0)`. Save and Load are placeholders for when we implement the serialization system.
+Added a top menu bar using egui-macroquad. The File menu has Save, Load, and Quit options. Only Quit is functional right now - it calls `std::process::exit(0)`. Save and Load are placeholders for when we implement the serialization system.
 
 Added a `draw_menu_bar()` method to the Renderer to keep the UI code organized. The menu uses egui's immediate mode API, which means the UI is rebuilt every frame through closures. It's quite nested but straightforward once you understand the pattern.
 
@@ -42,3 +42,16 @@ Updated README with:
 - Key features and inspirations
 
 Updated the todo list with Save System details and noted the Top Menu System completion.
+
+## 2026-02-21
+
+### Font Selection for Menu Bar
+
+Added JetBrains Mono font to the menu bar. Compared the default egui font with JetBrains Mono to see which looked better for the game's UI. After comparing side by side, the JetBrains Mono font is a nicer font and will be consistent with the ascii mode of the game.
+
+<table>
+<tr>
+<td><img src="default-menu-font.png" alt="Default font"><br><em>Default egui font</em></td>
+<td><img src="jetbrains-menu-font.png" alt="JetBrains Mono font"><br><em>JetBrains Mono font</em></td>
+</tr>
+</table>
