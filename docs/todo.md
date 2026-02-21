@@ -14,6 +14,15 @@
 
 ## Next Steps (After Current Priority)
 
+### Camera/Viewport System
+- Implement camera that tracks player as they move through dungeon
+- Support two camera modes:
+  - Edge-scrolling mode: Camera adjusts when player gets close to edge, keeping player on screen with margin (preferred)
+  - Center-lock mode: Camera always centers on player
+- Add keybind to recenter camera on player
+- Ensure camera doesn't show areas outside dungeon bounds
+- Convert between world coordinates (dungeon tiles) and screen coordinates
+
 ### Collision Detection & Turn System
 - Add collision detection (can't move through walls)
 - Implement turn-based system (wait for player input before advancing game state)
@@ -58,7 +67,10 @@
 
 ### Top Menu System
 - Add Save/Load option implementations (see Save System above)
-- Consider adding Edit/View/Help menus if needed
+- Add Help menu with Controls documentation
+  - Display all keybindings (movement, actions, commands)
+  - Show controls for both keyboard schemes (QWEZASD and numpad)
+  - Consider allowing players to rebind keys (save preferences to config file)
 - Add menu keybindings (ESC to close menus, etc.)
 
 ### UI Design (Major TODO - Needs Own Design Doc)
