@@ -14,12 +14,10 @@
 
 ## Next Steps (After Current Priority)
 
-### Implement basic movement and input handling
-- Add keyboard input handling (arrow keys/WASD/vi-keys)
-- Implement player movement logic
+### Collision Detection & Turn System
 - Add collision detection (can't move through walls)
-- Make the game turn-based (wait for player input before advancing)
-- Test movement with the current rendered player entity
+- Implement turn-based system (wait for player input before advancing game state)
+- Connect wait/pass turn keys to actual turn advancement
 
 ### Zoom System
 - Implement camera zoom in/out functionality
@@ -84,7 +82,5 @@
 
 ## Notes
 - See `/docs/design.md` for full game design
-- Current status: Tileset rendering works, player character displays with tile_id 391
-- Using macroquad for graphics and window management
 - Tileset: 8192x2048, 64x64 tiles, 128 tiles per row
 - Utility: `cargo run --bin tile_selector` to browse tileset
