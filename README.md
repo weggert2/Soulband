@@ -38,9 +38,6 @@ sudo apt-get install libasound2-dev libx11-dev libxi-dev libgl1-mesa-dev pkg-con
 
 ```bash
 cargo run --release
-
-# Run the tile selector utility
-cargo run --bin tile_selector
 ```
 
 ## Development
@@ -61,3 +58,8 @@ If using VSCode with rust-analyzer and Claude Code, you may encounter crashes wi
 ```
 
 This excludes Claude Code's virtual files from file watching and prevents rust-analyzer crashes.
+
+### Spritesheet navigation tool
+```bash
+cargo run --bin tile_selector --release
+```

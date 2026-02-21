@@ -46,6 +46,9 @@
   - Display unhandled key presses during development
   - Scrollable history of recent messages
   - Consider color-coding by message type (combat, environment, errors, etc.)
+- Add custom application logo/icon
+  - Replace generic taskbar icon with custom Soulband logo
+  - Icon should display when running `cargo run`
 
 ---
 
@@ -89,6 +92,19 @@
 - Challenge: Background thread decodes PNG while main thread shows animated "Loading..." with dots
 - Requires understanding of OpenGL thread-local contexts (GPU upload must be on main thread)
 - Good exercise in async/threading patterns for future features (streaming assets, background saves, etc.)
+
+---
+
+## Development Tools
+
+### Tile Selector Enhancements
+- Add visual indication when a tile is already used for something
+  - Change box color for tiles that are already assigned (different from unassigned tiles)
+  - Display usage information at bottom of screen (e.g., "This tile is used for: Goblin")
+- Create monster/entity definition file (YAML/TOML)
+  - Define all monsters and their assigned tiles
+  - Load this data into tile selector to check tile usage
+  - This will help prevent accidentally assigning the same tile to multiple entities
 
 ---
 
