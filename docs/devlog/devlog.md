@@ -51,7 +51,7 @@ Added JetBrains Mono font to the menu bar. Compared the default egui font with J
 
 <table>
 <tr>
-<td><img src="default-menu-font.png" alt="Default font"><br><em>Default egui font</em></td>
-<td><img src="jetbrains-menu-font.png" alt="JetBrains Mono font"><br><em>JetBrains Mono font</em></td>
+<td><img src="default-menu-font.png" alt="Default font" height="150"><br><em>Default egui font</em></td>
+<td><img src="jetbrains-menu-font.png" alt="JetBrains Mono font" height="150"><br><em>JetBrains Mono font</em></td>
 </tr>
 </table>
