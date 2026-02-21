@@ -1,4 +1,3 @@
-use egui_macroquad::egui;
 use macroquad::shapes;
 use macroquad::text::Font;
 use macroquad::texture::Texture2D;
@@ -41,22 +40,29 @@ impl Renderer {
     /// # Arguments
     ///
     /// * `entity` - The entity to draw
-    pub fn draw_entity(&self, entity: &Entity, use_tiles: bool) {
+    pub fn draw_entity(&self, entity: &Entity, _use_tiles: bool) {
         let screen_x: f32 = entity.x * self.game_tile_size;
         let screen_y: f32 = entity.y * self.game_tile_size;
 
-        if use_tiles {
-            // Tileset is 8192 / 64 = 128 tiles per row
-            self.draw_tile(
-                (entity.sprite.tile_id % 128) as f32, // tile_x in tileset grid
-                (entity.sprite.tile_id / 128) as f32, // tile_y in tileset grid
-                screen_x,
-                screen_y,
-            );
-        } else {
-            // error out for now
-            panic!("TODO: glyph rendering");
-        }
+        // if use_tiles {
+        //     // Tileset is 8192 / 64 = 128 tiles per row
+        //     self.draw_tile(
+        //         (entity.sprite.tile_id % 128) as f32, // tile_x in tileset grid
+        //         (entity.sprite.tile_id / 128) as f32, // tile_y in tileset grid
+        //         screen_x,
+        //         screen_y,
+        //     );
+        // } else {
+        //     // error out for now
+        //     panic!("TODO: glyph rendering");
+        // }
+
+        self.draw_tile(
+            (entity.sprite.tile_id % 128) as f32, // tile_x in tileset grid
+            (entity.sprite.tile_id / 128) as f32, // tile_y in tileset grid
+            screen_x,
+            screen_y,
+        );
 
         // let font_size: f32 = self.tile_size * entity.height;
         // let glyph_str: String = entity.sprite.glyph.to_string();
@@ -113,38 +119,6 @@ impl Renderer {
                 ..Default::default()
             },
         );
-    }
-
-    /// Draws the top menu bar with File menu
-    ///
-    /// Renders a menu bar at the top of the window using egui. Currently includes:
-    /// - File menu with Save (TODO), Load (TODO), and Quit options
-    ///
-    /// The Quit option will immediately exit the application. Save and Load options
-    /// are placeholders pending implementation of serialization system.
-    pub fn draw_menu_bar(&self) {
-        egui_macroquad::ui(|egui_ctx| {
-            egui::TopBottomPanel::top("menu_bar").show(egui_ctx, |ui| {
-                egui::menu::bar(ui, |ui| {
-                    ui.menu_button("File", |ui| {
-                        if ui.button("Save").clicked() {
-                            // TODO: Implement save functionality
-                            ui.close_menu();
-                        }
-                        if ui.button("Load").clicked() {
-                            // TODO: Implement load functionality
-                            ui.close_menu();
-                        }
-                        ui.separator();
-                        if ui.button("Quit").clicked() {
-                            std::process::exit(0);
-                        }
-                    });
-                });
-            });
-        });
-
-        egui_macroquad::draw();
     }
 
     /// Draws a debug grid overlay showing tile boundaries

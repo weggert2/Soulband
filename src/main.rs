@@ -9,7 +9,7 @@ mod ui;
 
 #[macroquad::main("Soulband")]
 async fn main() {
-    let use_tiles: bool = true; // TODO: make configurable.
+    let mut use_tiles: bool = true; // TODO: make configurable.
 
     input::show_mouse(true);
     input::set_cursor_grab(false);
@@ -28,14 +28,14 @@ async fn main() {
     ui::draw_loading_screen(&font);
     window::next_frame().await;
 
-    // Load tileset
+    // Load tileset. Takes few seconds in debug mode.
     let tileset = texture::load_texture("assets/tiles.png")
         .await
         .expect("Failed to load tileset");
 
     let renderer: renderer::Renderer =
         renderer::Renderer::new(game_tile_size, tileset_tile_size, font, tileset);
-        
+
     let player: player::Player = player::Player::new();
     let game_state: game_state::GameState = game_state::GameState::new(player);
 
@@ -44,7 +44,7 @@ async fn main() {
 
         renderer.draw_entity(&game_state.player.entity, use_tiles);
         renderer.draw_grid();
-        renderer.draw_menu_bar();
+        ui::draw_menu_bar(&mut use_tiles, true);
 
         window::next_frame().await;
     }
