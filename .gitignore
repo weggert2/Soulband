@@ -1,5 +1,7 @@
 build
 
+# Editor-specific
+.vscode
 
 # Added by cargo
 

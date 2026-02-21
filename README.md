@@ -42,3 +42,22 @@ cargo run --release
 # Run the tile selector utility
 cargo run --bin tile_selector
 ```
+
+## Development
+
+### VSCode Setup
+
+If using VSCode with rust-analyzer and Claude Code, you may encounter crashes with rust-analyzer due to Claude's virtual filesystem. To prevent this, create `.vscode/settings.json` with:
+
+```json
+{
+    "rust-analyzer.files.watcherExclude": [
+        "**/_claude_fs_*/**"
+    ],
+    "files.watcherExclude": {
+        "**/_claude_fs_*/**": true
+    }
+}
+```
+
+This excludes Claude Code's virtual files from file watching and prevents rust-analyzer crashes.
