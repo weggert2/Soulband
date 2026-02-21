@@ -37,8 +37,7 @@ sudo apt-get install libasound2-dev libx11-dev libxi-dev libgl1-mesa-dev pkg-con
 ## Building and Running
 
 ```bash
-# Run the game
-cargo run
+cargo run --release
 
 # Run the tile selector utility
 cargo run --bin tile_selector
