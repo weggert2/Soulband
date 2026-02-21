@@ -6,9 +6,13 @@ use crate::entity::Entity;
 
 /// Handles rendering of entities, tiles, and debug overlays
 pub struct Renderer {
+    /// Size of each tile in the game grid (in pixels)
     pub game_tile_size: f32,
+    /// Size of each tile in the tileset texture (in pixels)
     pub tileset_tile_size: f32,
+    /// Font used for ASCII glyph rendering
     pub font: Font,
+    /// Texture containing the tile graphics
     pub tileset: Texture2D,
 }
 
@@ -35,68 +39,69 @@ impl Renderer {
         }
     }
 
-    /// Draws an entity's glyph at its grid position, centered within the tile
+    /// Draws an entity at its grid position
     ///
     /// # Arguments
     ///
     /// * `entity` - The entity to draw
-    pub fn draw_entity(&self, entity: &Entity, _use_tiles: bool) {
+    /// * `use_tiles` - If true, use tileset; if false, use ASCII glyphs
+    pub fn draw_entity(&self, entity: &Entity, use_tiles: bool) {
         let screen_x: f32 = entity.x * self.game_tile_size;
         let screen_y: f32 = entity.y * self.game_tile_size;
 
-        // if use_tiles {
-        //     // Tileset is 8192 / 64 = 128 tiles per row
-        //     self.draw_tile(
-        //         (entity.sprite.tile_id % 128) as f32, // tile_x in tileset grid
-        //         (entity.sprite.tile_id / 128) as f32, // tile_y in tileset grid
-        //         screen_x,
-        //         screen_y,
-        //     );
-        // } else {
-        //     // error out for now
-        //     panic!("TODO: glyph rendering");
-        // }
-
-        self.draw_tile(
-            (entity.sprite.tile_id % 128) as f32, // tile_x in tileset grid
-            (entity.sprite.tile_id / 128) as f32, // tile_y in tileset grid
-            screen_x,
-            screen_y,
-        );
-
-        // let font_size: f32 = self.tile_size * entity.height;
-        // let glyph_str: String = entity.sprite.glyph.to_string();
-
-        // let text_dimensions: text::TextDimensions =
-        //     text::measure_text(&glyph_str, Some(&self.font), font_size as u16, 1.0);
-
-        // // Center horizontally and vertically
-        // let x_offset: f32 = 0.5 * (self.tile_size - text_dimensions.width);
-        // let y_offset: f32 =
-        //     0.5 * (self.tile_size - text_dimensions.height) + text_dimensions.offset_y;
-
-        // text::draw_text_ex(
-        //     &glyph_str,
-        //     screen_x + x_offset,
-        //     screen_y + y_offset,
-        //     text::TextParams {
-        //         font: Some(&self.font),
-        //         font_size: font_size as u16,
-        //         color: entity.sprite.color,
-        //         ..Default::default()
-        //     },
-        // );
+        if use_tiles {
+            self.draw_tile(entity, screen_x, screen_y);
+        } else {
+            self.draw_glyph(entity, screen_x, screen_y);
+        }
     }
 
-    /// Draws a single tile from the tileset to the screen
+    /// Draws an entity's ASCII glyph centered within a tile
     ///
     /// # Arguments
     ///
-    /// * `tile_x` - X coordinate in the tileset grid (which column)
-    /// * `tile_y` - Y coordinate in the tileset grid (which row)
-    /// * `screen_x` - X position on screen in grid coordinates (will be multiplied by tile_size)
-    /// * `screen_y` - Y position on screen in grid coordinates (will be multiplied by tile_size)
-    pub fn draw_tile(&self, tile_x: f32, tile_y: f32, screen_x: f32, screen_y: f32) {
+    /// * `entity` - The entity to draw (for sprite data)
+    /// * `screen_x` - X position on screen in pixels
+    /// * `screen_y` - Y position on screen in pixels
+    pub fn draw_glyph(&self, entity: &Entity, screen_x: f32, screen_y: f32) {
+        let font_size: f32 = self.game_tile_size * entity.height;
+        let glyph_str: String = entity.sprite.glyph.to_string();
+
+        let text_dimensions: macroquad::text::TextDimensions =
+            macroquad::text::measure_text(&glyph_str, Some(&self.font), font_size as u16, 1.0);
+
+        // Center horizontally and vertically
+        let x_offset: f32 = 0.5 * (self.game_tile_size - text_dimensions.width);
+        let y_offset: f32 =
+            0.5 * (self.game_tile_size - text_dimensions.height) + text_dimensions.offset_y;
+
+        macroquad::text::draw_text_ex(
+            &glyph_str,
+            screen_x + x_offset,
+            screen_y + y_offset,
+            macroquad::text::TextParams {
+                font: Some(&self.font),
+                font_size: font_size as u16,
+                color: entity.sprite.color,
+                ..Default::default()
+            },
+        );
+    }
+
+    /// Draws an entity's tile from the tileset to the screen
+    ///
+    /// # Arguments
+    ///
+    /// * `entity` - The entity to draw (for sprite tile_id)
+    /// * `screen_x` - X position on screen in pixels
+    /// * `screen_y` - Y position on screen in pixels
+    pub fn draw_tile(&self, entity: &Entity, screen_x: f32, screen_y: f32) {
+        // Tileset is 8192 / 64 = 128 tiles per row
+        let tiles_per_row: u32 = 128;
+        let tile_x: f32 = (entity.sprite.tile_id % tiles_per_row) as f32; // column in tileset
+        let tile_y: f32 = (entity.sprite.tile_id / tiles_per_row) as f32; // row in tileset
+
+
         // Source rectangle in the tileset (uses tileset_tile_size)
         let src_rect = macroquad::math::Rect {
             x: tile_x * self.tileset_tile_size,
