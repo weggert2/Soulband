@@ -44,12 +44,12 @@ impl Renderer {
     /// # Arguments
     ///
     /// * `entity` - The entity to draw
-    /// * `use_tiles` - If true, use tileset; if false, use ASCII glyphs
-    pub fn draw_entity(&self, entity: &Entity, use_tiles: bool) {
+    /// * `use_graphics` - If true, use tileset; if false, use ASCII glyphs
+    pub fn draw_entity(&self, entity: &Entity, use_graphics: bool) {
         let screen_x: f32 = entity.x * self.game_tile_size;
         let screen_y: f32 = entity.y * self.game_tile_size;
 
-        if use_tiles {
+        if use_graphics {
             self.draw_tile(entity, screen_x, screen_y);
         } else {
             self.draw_glyph(entity, screen_x, screen_y);

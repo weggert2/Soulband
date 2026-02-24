@@ -31,15 +31,15 @@ pub fn draw_loading_screen(font: &Font) {
 ///
 /// Renders a menu bar at the top of the window using egui. Currently includes:
 /// - File menu with Save (TODO), Load (TODO), and Quit options
-/// - Options menu with Use Tiles option (TODO)
+/// - Options menu with Use Graphics option (TODO)
 ///
 /// The Quit option will immediately exit the application. Save and Load options
 /// are placeholders pending implementation of serialization system.
 ///
 /// # Arguments
 ///
-/// * `use_tiles` - Current state of the use_tiles setting
-pub fn draw_menu_bar(use_tiles: &mut bool, use_fonts: bool) {
+/// * `use_graphics` - Current state of the use_graphics setting
+pub fn draw_menu_bar(use_graphics: &mut bool, use_fonts: bool) {
     egui_macroquad::ui(|egui_ctx| {
         // Configure egui fonts on first call if use_fonts is true
         if use_fonts {
@@ -63,10 +63,10 @@ pub fn draw_menu_bar(use_tiles: &mut bool, use_fonts: bool) {
                     }
                 });
                 ui.menu_button("Options", |ui| {
-                    let check_mark = if *use_tiles { "✓ " } else { "  " };
-                    let label = format!("{}Use Tiles", check_mark);
+                    let check_mark = if *use_graphics { "✓ " } else { "  " };
+                    let label = format!("{}Use Graphics", check_mark);
                     if ui.button(label).clicked() {
-                        *use_tiles = !*use_tiles;
+                        *use_graphics = !*use_graphics;
                     }
                 });
             });
