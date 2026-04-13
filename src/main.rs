@@ -5,11 +5,12 @@ mod game_state;
 mod player;
 mod renderer;
 mod sprite;
-mod tile;
+// mod tile;
 mod ui;
 
 #[macroquad::main("Soulband")]
 async fn main() {
+    let debug: bool = true; // TODO: make configurable.
     let mut use_graphics: bool = true; // TODO: make configurable.
 
     input::show_mouse(true);
@@ -45,9 +46,12 @@ async fn main() {
 
         game_state.handle_input();
         renderer.draw_entity(&game_state.player.entity, use_graphics);
-        renderer.draw_grid();
-        ui::draw_menu_bar(&mut use_graphics, true);
 
+        if debug {
+            renderer.draw_grid();
+        }
+
+        ui::draw_menu_bar(&mut use_graphics, true);
         window::next_frame().await;
     }
 }
