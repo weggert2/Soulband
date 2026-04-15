@@ -1,0 +1,12 @@
+[submodule "coderef/angband"]
+	path = coderef/angband
+	url = git@github.com:angband/angband.git
+[submodule "coderef/BrogueCE"]
+	path = coderef/BrogueCE
+	url = git@github.com:tmewett/BrogueCE.git
+[submodule "coderef/umoria"]
+	path = coderef/umoria
+	url = git@github.com:dungeons-of-moria/umoria.git
+[submodule "coderef/crawl"]
+	path = coderef/crawl
+	url = git@github.com:crawl/crawl.git

@@ -47,11 +47,145 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Other legendary monsters from various sources
 
 ### Dungeon Design
+
+**Level Generation System (Angband-inspired):**
 - **Randomly generated dungeons** for each run
-- **Special room types**:
-  - Monster rooms (large encounters)
-  - Monster pits (themed groups of enemies)
-  - Vaults (from Angband tradition)
+- **Multi-phase generation algorithm**:
+  1. **Basic room placement**: Place rooms of varying sizes throughout the level
+  2. **Corridor connections**: Connect rooms with hallways
+  3. **Special room placement**: Place vaults, monster pits, and themed rooms
+  4. **Feature population**: Add doors, stairs, bonfires, and other features
+  5. **Monster spawning**: Populate rooms and corridors with enemies
+  6. **Loot placement**: Distribute items, gold, and artifacts
+
+**Room Types:**
+- **Standard rooms**: Rectangular rooms of various sizes (small, medium, large)
+- **Irregular rooms**: Non-rectangular shapes for variety
+- **Corridors**: Connecting passages between rooms
+  - Not just straight lines or L-shapes
+  - Minor width variations (1-2 tiles wide, occasionally 3)
+  - Twists and turns for organic feel
+  - Occasional wider junctions or small alcoves
+- **Monster rooms**: Large chambers with significant enemy encounters
+- **Treasure rooms**: Small rooms with loot-heavy spawns
+- **Empty rooms**: Atmospheric but sparse (not every room has content)
+
+**Special Room Types:**
+
+**Vaults (Angband Tradition):**
+- **Handcrafted layouts** defined in ASCII art text files
+- **Tiered by difficulty**:
+  - Lesser vaults: small, moderate danger, decent loot
+  - Greater vaults: medium-large, high danger, excellent loot
+  - Artifact vaults: rare, very dangerous, guaranteed artifacts
+- **Vault characteristics**:
+  - Usually have thick walls or special perimeter walls
+  - May require vault keys (purchased in town) to access
+  - Dense monster population
+  - High-value treasure and equipment
+  - Often contain unique or rare enemies
+  - Can have internal structure (pillars, sub-rooms, mazes)
+- **ASCII art format example**:
+  ```
+  ############
+  #..........#
+  #.##....##.#
+  #.#......#.#
+  #.#..$$..#.#    Legend:
+  #.#......#.#    # = wall
+  #.##....##.#    . = floor
+  #..........#    $ = treasure
+  #+########+#    + = door
+  ```
+- **Vault templates contain**:
+  - Visual layout (walls, floors, doors, features)
+  - Treasure density markers
+  - Monster spawn markers (specific or themed)
+  - Special terrain (water, lava, chasms)
+  - Metadata: minimum depth, rarity, required keys
+
+**Monster Pits (Themed Encounters):**
+- **Thematic groups of enemies** in a contained area
+- **ASCII art layouts** similar to vaults but typically:
+  - Less structured/fortified (no thick walls)
+  - More organic shapes
+  - Focused on enemy composition over loot
+  - Can be open pits or enclosed chambers
+- **Pit themes examples**:
+  - **Orc pit**: Various orc types (warriors, shamans, chieftains)
+  - **Undead pit**: Skeletons, zombies, wraiths
+  - **Dragon nest**: Multiple dragons and drakes
+  - **Demon pit**: Various demonic entities
+  - **Troll cave**: Different troll variants
+  - **Spider den**: Spiders of all sizes
+  - **Hydra pool**: Water-themed with hydras
+- **Pit characteristics**:
+  - Enemies all share a theme or creature type
+  - Higher monster density than normal rooms
+  - Loot appropriate to enemy type
+  - Often positioned in high-risk areas
+  - May have environmental hazards matching theme
+- **Pit template format**:
+  ```
+  ##########
+  #........####
+  #o.o......o.#
+  ##o....o....#
+  #..oo.o.....#    o = orc spawn marker
+  #.o.........#    Other metadata:
+  ##.........##    - theme: orcs
+  ###.....###      - min_depth: 5
+    #######        - spawn_count: 8-12
+  ```
+
+**Template System Implementation:**
+- **File format**: TOML or YAML with embedded ASCII art
+- **Template structure**:
+  ```toml
+  [vault]
+  name = "Small Treasury"
+  type = "lesser_vault"
+  min_depth = 10
+  max_depth = 30
+  rarity = 15  # 1-100 scale
+  requires_key = false
+  
+  layout = """
+  ############
+  #..........#
+  #.$$$$$$$$.$#
+  #+########+#
+  """
+  
+  [vault.legend]
+  '#' = "wall"
+  '.' = "floor"
+  '$' = "treasure_high"
+  '+' = "door"
+  
+  [vault.monsters]
+  count = "4-8"
+  theme = "treasure_guardians"
+  ```
+- **Tile legend mapping**: Map ASCII characters to game tiles
+- **Spawn markers**: Special characters indicate where to place entities
+- **Rotation and mirroring**: Templates can be randomly rotated/mirrored for variety
+- **Parameterization**: Templates can have variables (monster count, treasure amount)
+
+**Placement & Configuration:**
+- **Configurable spawn frequency**: Per-vault-type setting (0.0 to 1.0 scale)
+  - 0.0 = never spawns
+  - 1.0 = always spawns (guaranteed per level)
+  - Adjustable per vault/pit template in config files
+  - **Separate from depth**: Frequency controls if it spawns, depth controls which tier/rarity
+  - Addresses Angband's problem of too-rare special rooms
+- **Depth effects**:
+  - Shallow depths: simple treasure rooms, lesser vaults, weak monster pits
+  - Deep depths: artifact vaults, greater vaults, dangerous themed pits
+  - Depth affects "specialness" and difficulty, not just spawn chance
+- **Spacing**: Maintain minimum distance between special rooms
+- **Accessibility**: Ensure all special rooms are reachable from main dungeon path
+- **Typical frequency**: 0-2 vaults and 0-3 monster pits per level (configurable)
 
 **Dungeon Persistence & Corpse Runs:**
 - **Level persistence**: Up to 2 dungeon levels cached in memory
@@ -150,13 +284,6 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Used for leveling up stats (spending gold)
   - **Bonfires exist in town and throughout dungeon levels**
   - **1-2 bonfires per dungeon level**, randomly placed
-  - **Biased towards dangerous locations**:
-    - Near cleared monster rooms
-    - Near monster pits
-    - In or near vaults
-    - Far from stairs (deep in the level)
-    - Dead ends and isolated areas
-  - Placement rewards exploration and clearing dangerous encounters
   - (TBD: Are bonfires pre-placed but inactive until area is cleared, or always active?)
 - **Recall mechanics** (scroll or ability):
   - **From dungeon → town**: Returns you to town bonfire
@@ -513,32 +640,139 @@ Inspired by Brogue's emergent environmental gameplay:
 
 ---
 
-## Content Configuration
+## Content Configuration & Implementation Approach
 
-**Data-Driven Design** (inspired by Angband):
-- **All game content should be configurable via text files**
-- Content types to be data-driven:
-  - **Monsters**: stats, abilities, drops, AI behavior
-  - **Artifacts**: unique items with fixed properties
-  - **Item templates**: weapon/armor types, base stats, possible properties
-  - **Vault templates**: special room layouts and contents
-  - **Room templates**: dungeon room patterns and features
-  - **Spells/Prayers**: magic abilities, costs, effects
-  - **Status effects**: buildup rates, proc effects, durations
-- **Benefits**:
-  - Easy content addition without code changes
-  - Simple balance iteration
-  - Community modding support
-  - Clear separation of data and logic
-- **Format**:
-  - **General content** (monsters, items, artifacts, spells): Structured text with comments (YAML/TOML)
-  - **Room/Vault templates**: ASCII art format (Angband-style)
-    - Visual layout using ASCII characters
-    - Can be embedded in TOML/YAML files
-    - Requires custom parsing system for layout
-    - Example: Draw walls as `#`, floors as `.`, doors as `+`, etc.
-    - Allows intuitive visual design of dungeon features
-- **Implementation note**: Design content systems to load from config files from the start
+### Data-Driven Design (inspired by Angband)
+
+**Philosophy**: All game content should be configurable via text files (YAML/TOML format).
+
+**Required Data Files** (for implementation):
+- `monsters.yaml` - All monster stats, abilities, drops, AI behavior
+- `artifacts.yaml` - Unique items with fixed properties
+- `item_templates.yaml` - Weapon/armor types, base stats, possible properties, scaling
+- `vaults.yaml` - ASCII art vault layouts with treasure/monster markers
+- `monster_pits.yaml` - Themed encounter definitions (orc pits, dragon nests, etc.)
+- `room_templates.yaml` - Standard dungeon room patterns
+- `spells.yaml` - Sorceries (INT-based) with costs, effects, requirements
+- `prayers.yaml` - Miracles (FTH-based) with costs, effects, requirements
+- `status_effects.yaml` - Buildup rates, proc effects, durations
+- `dungeon_profiles.yaml` - Per-depth generation settings (room frequency, vault probability, etc.)
+
+**ASCII Art Template Format** (Angband-inspired):
+- Visual layouts embedded in YAML/TOML files
+- Rich symbol legend for dungeon features:
+  - `#` = wall, `.` = floor, `+` = door (secret or normal)
+  - `$` = gold/treasure, `&` = treasure or trap
+  - `^` = trap, `:` = rubble, `` ` `` = lava, `/` = water
+  - Numbers `0-9` = monster/loot markers with depth scaling
+    - `1` = standard depth monster/item
+    - `5` = 7 levels out-of-depth (OOD) treasure
+    - `8` = 40 levels OOD monster + 20 levels OOD treasure (ultra rare)
+  - Letters `a-z`, `A-Z` = specific monster types by symbol
+- Metadata per template: `name`, `type`, `min_depth`, `max_depth`, `rarity`, `spawn_frequency` (0.0-1.0)
+- Rotation/mirroring: Templates can be randomly transformed for variety
+
+**Benefits**:
+- Content addition without code changes
+- Rapid balance iteration
+- Community modding support
+- Clear separation of data and logic
+- Easy testing with wizard mode
+
+**Implementation Priority**: Design content systems to load from config files from the start.
+
+---
+
+### Level Generation Implementation (Angband + Brogue Hybrid)
+
+**Core Algorithm** (Angband approach):
+1. Place rooms of various sizes
+2. Connect rooms with corridors
+3. Place special rooms (vaults, pits)
+4. Add features (doors, stairs, bonfires)
+5. Spawn monsters and loot
+
+**Corridor Generation** (Brogue-inspired organic feel):
+- Not just straight lines or L-shapes
+- **Width variation**: 1-2 tiles wide, occasionally 3
+- **Twists and turns**: Meandering paths using noise/randomness
+- **Occasional features**:
+  - Wider junctions where multiple corridors meet
+  - Small alcoves (dead-ends, hiding spots)
+  - Irregular shapes (less "grid-aligned" feel)
+- **Algorithm considerations**:
+  - Use pathfinding but add controlled randomness
+  - Avoid perfect Manhattan distance paths
+  - Add slight curves and bends
+  - Occasionally branch corridors before reaching destination
+
+**Special Room Placement**:
+- Load vault/pit templates from `vaults.yaml` and `monster_pits.yaml`
+- Filter by depth: `min_depth <= current_depth <= max_depth`
+- Roll for spawn using `spawn_frequency` (0.0 = never, 1.0 = always)
+- Apply rarity weighting for multiple valid templates
+- Ensure spacing between special rooms
+- Guarantee accessibility from main dungeon path
+
+---
+
+### Environmental Systems (Future/Non-MVP - Brogue-inspired)
+
+**Purpose**: Add emergent tactical depth and environmental storytelling.
+
+**Fire & Spreading** (inspired by Brogue):
+- Fire spreads through flammable terrain (grass, wooden structures, carpets)
+- Burns creatures standing in fire (damage over time)
+- Creates smoke/obscurement (blocks vision)
+- Fire spells and attacks can ignite terrain
+- Water extinguishes fire
+- **Tactical use**: Weaponize environment, block enemy paths, create diversions
+
+**Flooding & Water Systems**:
+- Flood-fill algorithms for water spreading
+- Deep water is impassable without swimming/levitation
+- Shallow water slows movement
+- Electric damage spreads through water (chain effects)
+- Water can extinguish burning terrain/creatures
+- Ice spells freeze water into walkable bridges (temporary)
+- **Reference**: See `BrogueCE/src/brogue/Architect.c` for flood-fill implementation
+
+**Gas & Vapor Clouds**:
+- Poison gas clouds: damage over time, obscure vision
+- Flammable gases: can be ignited for explosions
+- Clouds dissipate over time or with wind effects
+- Created by spells, items, traps, or environmental sources
+- **Visibility**: Gases should be clearly visible (animated sprites, particles)
+
+**Terrain Transformation**:
+- Lava → solid ground (via ice/water cooling)
+- Water → ice bridges (via frost spells)
+- Ice → water (via fire/heat)
+- Walls → rubble (via monster frenzy or destruction spells)
+- **Temporary effects**: Bridges/platforms may expire after time or turns
+
+**Chasms & Vertical Traversal**:
+- Falling into chasm = forced descent to next level
+- Risk: unplanned descent, skip loot/bonfires
+- Push/knock enemies into chasms (instant kill)
+- Flying creatures can pass over chasms
+- Bridges can be created or destroyed
+
+**Tactical Implications**:
+- Environmental damage affects player AND enemies (no friendly fire immunity)
+- Emergent combos: Wet + lightning, fire spreading to cut off pursuit
+- Positioning matters beyond melee range
+- Risk of backfire (your fire spreads to you, your explosion hits you)
+
+**Implementation Notes**:
+- Start with basic floor/wall tiles (MVP)
+- Add environmental layers incrementally post-MVP
+- Use cellular automata for spreading effects (fire, water, gas)
+- Requires per-tile state tracking (burning, wet, frozen, etc.)
+- Animation system for visible spreading (important for player feedback)
+- **Reference implementations**: 
+  - Brogue's `Architect.c` for organic generation and flooding
+  - Brogue's fire/gas spreading mechanics
 
 ---
 
