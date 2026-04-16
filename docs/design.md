@@ -416,6 +416,84 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 
 ---
 
+## Future Features (Post-MVP)
+
+### Interactive World Objects & Shrines (Crawl-inspired)
+
+**Purpose**: Add risk/reward decisions and world interactivity beyond combat.
+
+**Shrine Types**:
+
+**Healing Shrines**
+- Restore HP and/or mana when activated
+- One-time use per shrine
+- Common in dungeons
+- Safe, predictable benefit
+
+**Experience Shrines**
+- Grant bonus experience or skill points
+- Rare spawns
+- Could require gold offering to activate
+- High value, encourages exploration
+
+**Blessing Shrines**
+- Temporary buffs (increased stats, resistances, speed)
+- Duration: 100-500 turns
+- Stacks with other effects
+- Risk: might attract nearby monsters when activated
+
+**Curse Shrines**
+- Negative effects (stat drain, bad status, spawn monsters)
+- Look identical to blessing shrines until activated (unidentified)
+- Can be identified with scroll/spell or by trial and error
+- Knowledge persists: once identified, you know for rest of run
+
+**Unidentified Shrines**
+- Mixed bag: 50% positive, 50% negative
+- Gambling on unknown effect
+- Can be:
+  - Major heal OR major curse
+  - Gold reward OR gold drain
+  - Artifact spawn OR dangerous monster spawn
+- High risk, high reward
+- Identification mechanics: scroll of identify, Intelligence-based check, or just activate and find out
+
+**God Altars** (Crawl system - future consideration)
+- Dedicate yourself to a god (one per run)
+- Gain god-specific abilities and bonuses
+- Requires worship actions (sacrifices, killing specific enemies)
+- Gods can be angry if you displease them
+- Major system - requires design doc
+
+**Fountains**
+- Drink for random effect
+- Can be: healing, mana restore, stat boost, poison, confusion
+- Limited uses (dry up after 2-5 drinks)
+- Risky but tempting
+
+**Gambling Shrines**
+- Offer gold, receive random reward
+- Reward scales with offering amount
+- Can lose your gold for nothing
+- Can win rare items or massive gold multiplier
+- Tension with death threshold system (spend safety net for potential gain?)
+
+**Implementation Notes**:
+- Shrines are world objects placed during level generation
+- One-time use (mark as "depleted" after activation)
+- Identification state tracked per shrine type
+- Some shrines could have visible clues (decorative differences, auras)
+- Could be theme-specific (healing shrines in temples, curse shrines in crypts)
+- Wizard mode: spawn specific shrine types, reset shrine usage
+
+**Placement**:
+- In rooms (central feature)
+- In alcoves off corridors
+- In vaults (multiple shrines with themes)
+- Rare: hidden behind secret doors
+
+---
+
 ## Open Questions
 
 ### Leveling & Threshold Formulas

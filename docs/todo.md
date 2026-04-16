@@ -2,13 +2,53 @@
 
 ## Current Priority
 
-### 1. Create basic dungeon level with tiles
-- Design a tile system (floor, wall, door types)
-- Create a simple level data structure (2D grid)
-- Implement basic level generation (start with simple rooms + corridors)
-- Render the dungeon tiles to screen
-- Position player within the dungeon level
-- Add basic field-of-view/visibility system
+### 1. Level Generation (See `/docs/levelgen.md` for detailed roadmap)
+
+**Current Phase: Phase 1 - Rectangular Rooms Only (MVP)**
+
+**WHERE WE LEFT OFF (April 15, 2026):**
+We completed the design phase and are ready to start coding. Next step: implement basic types in `src/level.rs` ONE STRUCT AT A TIME (going slow so user can learn).
+
+Start with:
+1. TileType enum (Wall, Floor)
+2. Tile struct (terrain, room_id)
+3. GeometricShape enum (Rectangle for MVP)
+4. RoomShape enum (Geometric/Template/Organic)
+5. RoomTheme enum (Normal for MVP)
+6. Room struct
+7. Level struct
+8. Level generation algorithm
+
+**Implementation checklist:**
+- [ ] Create `src/level.rs` module
+- [ ] Implement TileType enum
+- [ ] Implement Tile struct
+- [ ] Implement GeometricShape enum (Rectangle only for now)
+- [ ] Implement RoomShape enum
+- [ ] Implement RoomTheme enum  
+- [ ] Implement Room struct with `new_rectangle()` and `is_in_room()`
+- [ ] Implement Level struct with `new()` and `generate()`
+- [ ] Implement `try_place_room()` - random position search
+- [ ] Implement `room_fits()` - collision check with 1-tile buffer
+- [ ] Implement `place_room()` - place floor tiles on grid
+- [ ] Test: Generate 80×30 level with 20-40 rooms
+- [ ] Render rooms to screen
+- [ ] Basic wizard mode (regen level, reveal map)
+
+**Next phases** (see levelgen.md):
+- Phase 2: Room shape variety (circles, crosses, overlapping, etc.)
+- Phase 3: Organic features (lakes, chasms, caverns, bridges)
+- Phase 4: Blend structured + organic ("buildings on organic ground")
+- Phase 5: Corridors & connectivity
+- Phase 6: Vaults & monster pits
+
+---
+
+### 2. Dungeon Rendering & Player
+- [ ] Design tile system (floor, wall, door, water, chasm types)
+- [ ] Render dungeon tiles to screen
+- [ ] Position player within the dungeon level
+- [ ] Add basic field-of-view/visibility system
 
 ---
 
