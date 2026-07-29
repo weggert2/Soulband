@@ -101,7 +101,6 @@ impl Renderer {
         let tile_x: f32 = (entity.sprite.tile_id % tiles_per_row) as f32; // column in tileset
         let tile_y: f32 = (entity.sprite.tile_id / tiles_per_row) as f32; // row in tileset
 
-
         // Source rectangle in the tileset (uses tileset_tile_size)
         let src_rect = macroquad::math::Rect {
             x: tile_x * self.tileset_tile_size,
