@@ -31,7 +31,7 @@ Start with:
 - [ ] Implement `try_place_room()` - random position search
 - [ ] Implement `room_fits()` - collision check with 1-tile buffer
 - [ ] Implement `place_room()` - place floor tiles on grid
-- [ ] Test: Generate 80×30 level with 20-40 rooms
+- [ ] Test: Generate 80×30 level with 10-20 rooms (target `max_rooms`, stop early after 10 consecutive placement failures)
 - [ ] Render rooms to screen
 - [ ] Basic wizard mode (regen level, reveal map)
 

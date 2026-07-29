@@ -533,7 +533,7 @@ fn glyph_to_tile_type(c: char) -> Option<TileType> {
 
 - [ ] Greedy placement algorithm with random sampling
   ```
-  max_rooms = 40
+  max_rooms = 20  // target, not a guarantee; density self-limits via failures
   consecutive_failures = 0
   rooms_placed = 0
   
@@ -567,7 +567,7 @@ fn glyph_to_tile_type(c: char) -> Option<TileType> {
   - `wizard_reveal_map` - Show entire map (no fog of war)
   - Press key to iterate: generate → view → regenerate
 
-**Success criteria**: 20-40 rectangular rooms scattered across map with 1-tile spacing.
+**Success criteria**: 10-20 rectangular rooms scattered across map with 1-tile spacing. The generator targets up to `max_rooms` but stops early after 10 consecutive placement failures, so the final count self-limits by how much space is left.
 
 ---
 
@@ -885,7 +885,7 @@ Notice how random noise becomes natural-looking blob shapes!
 ```
 1. Place structured rooms (rectangles, circles, crosses)
    - Use Angband's placement algorithm
-   - 20-40 rooms scattered across map
+   - 10-20 rooms scattered across map
    
 2. Identify open spaces between rooms
    - Flood fill to find large empty areas
