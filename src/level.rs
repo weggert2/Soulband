@@ -41,3 +41,32 @@ pub enum RoomShape {
     Template(Vec<String>),
     Organic,
 }
+
+// The purpose of the room, e.g. Vault, MonsterPit, Shrine etc.
+pub enum RoomTheme {
+    Normal,
+    Vault,
+    MonsterPit,
+    Boss,
+    Shrine,
+    Lake,
+    Chasm,
+}
+
+pub struct Room {
+    pub id: u32,
+
+    // top left of the bounding box
+    pub x: u32,
+    pub y: u32,
+
+    // width, height of the bounding box
+    pub width: u32,
+    pub height: u32,
+}
+
+impl Room {
+    fn get_bounding_box() -> bool {
+        true
+    }
+}
