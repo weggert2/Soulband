@@ -15,6 +15,11 @@ pub struct Tile {
     pub room_id: Option<u32>,
 }
 
+pub struct Point {
+    pub x: u32,
+    pub y: u32,
+}
+
 pub struct Rectangle {
     pub width: u32,
     pub height: u32,
@@ -53,20 +58,21 @@ pub enum RoomTheme {
     Chasm,
 }
 
-pub struct Room {
-    pub id: u32,
-
-    // top left of the bounding box
-    pub x: u32,
-    pub y: u32,
-
-    // width, height of the bounding box
-    pub width: u32,
-    pub height: u32,
+pub struct BoundingBox {
+    pub origin: Point,
+    pub rect: Rectangle,
 }
 
-impl Room {
-    fn get_bounding_box() -> bool {
-        true
-    }
+pub struct Room {
+    pub id: u32,
+    pub shape: RoomShape,
+    pub theme: RoomTheme,
+    pub bounding_box: BoundingBox,
+}
+
+pub struct Level {
+    pub width: u32,
+    pub height: u32,
+    pub tiles: Vec<Tile>,
+    pub rooms: Vec<Room>,
 }
