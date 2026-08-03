@@ -1,7 +1,7 @@
 #![allow(dead_code)] // TODO: remove
 
-// use egui_macroquad::egui::Rect;
-use macroquad::rand::RandGenerator;
+use rand::rngs::StdRng;
+use rand::RngExt;
 
 /// type of terrain for a tile
 #[derive(Clone, Copy)]
@@ -18,20 +18,24 @@ pub struct Tile {
     pub room_id: Option<u32>,
 }
 
+#[derive(Debug)]
 pub struct Point {
     pub x: u32,
     pub y: u32,
 }
 
+#[derive(Debug)]
 pub struct Rectangle {
     pub width: u32,
     pub height: u32,
 }
 
+#[derive(Debug)]
 pub struct Circle {
     pub radius: u32,
 }
 
+#[derive(Debug)]
 pub struct Cross {
     pub horizontal_width: u32,
     pub horizontal_height: u32,
@@ -39,11 +43,14 @@ pub struct Cross {
     pub vertical_height: u32,
 }
 
+#[derive(Debug)]
 pub enum GeometricShape {
     Rectangle(Rectangle),
     Circle(Circle),
     Cross(Cross),
 }
+
+#[derive(Debug)]
 pub enum RoomShape {
     Geometric(GeometricShape),
     Template(Vec<String>),
@@ -51,6 +58,7 @@ pub enum RoomShape {
 }
 
 // The purpose of the room, e.g. Vault, MonsterPit, Shrine etc.
+#[derive(Debug)]
 pub enum RoomTheme {
     Normal,
     Vault,
@@ -61,11 +69,13 @@ pub enum RoomTheme {
     Chasm,
 }
 
+#[derive(Debug)]
 pub struct BoundingBox {
     pub origin: Point,
     pub rect: Rectangle,
 }
 
+#[derive(Debug)]
 pub struct Room {
     pub id: u32,
     pub shape: RoomShape,
@@ -102,7 +112,7 @@ impl Level {
         Level::new(Self::DEFAULT_WIDTH, Self::DEFAULT_HEIGHT)
     }
 
-    pub fn generate(&mut self, rng: &RandGenerator) {
+    pub fn generate(&mut self, rng: &mut StdRng) {
         // Blow away all the tiles, replace with walls. We'll carve out rooms and hallways.
         self.tiles = vec![
             Tile {
@@ -120,8 +130,8 @@ impl Level {
         let room_id: u32 = 0;
 
         while rooms_placed < Self::MAX_ROOMS && tries < max_tries {
-            let height: u32 = rng.gen_range(0, Self::MAX_RECT_ROOM_SIZE);
-            let width: u32 = rng.gen_range(0, Self::MAX_RECT_ROOM_SIZE);
+            let height: u32 = rng.random_range(0..Self::MAX_RECT_ROOM_SIZE);
+            let width: u32 = rng.random_range(0..Self::MAX_RECT_ROOM_SIZE);
 
             let room: Room = Room {
                 id: room_id,
@@ -129,14 +139,14 @@ impl Level {
                 theme: RoomTheme::Normal,
                 bounding_box: BoundingBox {
                     origin: Point {
-                        x: rng.gen_range(0, self.width),
-                        y: rng.gen_range(0, self.height),
-                    },But
+                        x: rng.random_range(0..self.width),
+                        y: rng.random_range(0..self.height),
+                    },
                     rect: Rectangle { height, width },
                 },
             };
 
-            println!(room);
+            dbg!(room);
 
             // debug: exit immediately
             tries = 999;
@@ -147,6 +157,9 @@ impl Level {
 #[cfg(test)]
 mod test {
     use super::*;
+    use rand::SeedableRng;
+
+    const DEFAULT_SEED: u64 = 0;
 
     #[test]
     fn test_default_size() {
@@ -160,8 +173,7 @@ mod test {
     #[test]
     fn test_generate() {
         let mut level: Level = Level::default_size();
-        let rng: RandGenerator = RandGenerator::new();
-        rng.srand(0);
-        level.generate(&rng);
+        let mut rng: StdRng = StdRng::seed_from_u64(DEFAULT_SEED);
+        level.generate(&mut rng);
     }
 }

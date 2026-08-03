@@ -18,3 +18,4 @@ macroquad = "0.4"
 # egui-macroquad audio is disabled because WSL2 lacks native audio support, causing ALSA errors at
 # runtime. default-features = false only disables audio feature (see egui-macroquad Cargo.toml)
 egui-macroquad = { version = "0.17", default-features = false }
+rand = "0.10.2"
