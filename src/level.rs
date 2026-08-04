@@ -97,6 +97,7 @@ impl Level {
     const MAX_ROOMS: u32 = 20;
 
     // Max size for height and width of a rectangular room
+    const MIN_RECT_ROOM_SIZE: u32 = 4;
     const MAX_RECT_ROOM_SIZE: u32 = 12;
 
     pub fn new(width: u32, height: u32) -> Self {
@@ -112,7 +113,20 @@ impl Level {
         Level::new(Self::DEFAULT_WIDTH, Self::DEFAULT_HEIGHT)
     }
 
+    /// Generates the level's layout: fills the grid with walls, then carves rooms.
+    ///
+    /// Existing tiles and rooms are cleared first, so this can be called
+    /// repeatedly to regenerate a level in place.
+    ///
+    /// # Arguments
+    ///
+    /// * `rng` - Seeded random number generator; the same seed produces the
+    ///   same layout, which is what makes generation reproducible for testing.
     pub fn generate(&mut self, rng: &mut StdRng) {
+        // Check invariants
+        assert!(Self::MAX_RECT_ROOM_SIZE < self.width);
+        assert!(Self::MAX_RECT_ROOM_SIZE < self.height);
+
         // Blow away all the tiles, replace with walls. We'll carve out rooms and hallways.
         self.tiles = vec![
             Tile {
@@ -130,8 +144,8 @@ impl Level {
         let room_id: u32 = 0;
 
         while rooms_placed < Self::MAX_ROOMS && tries < max_tries {
-            let height: u32 = rng.random_range(0..Self::MAX_RECT_ROOM_SIZE);
-            let width: u32 = rng.random_range(0..Self::MAX_RECT_ROOM_SIZE);
+            let height: u32 = rng.random_range(Self::MIN_RECT_ROOM_SIZE..=Self::MAX_RECT_ROOM_SIZE);
+            let width: u32 = rng.random_range(Self::MIN_RECT_ROOM_SIZE..=Self::MAX_RECT_ROOM_SIZE);
 
             let room: Room = Room {
                 id: room_id,
@@ -139,14 +153,16 @@ impl Level {
                 theme: RoomTheme::Normal,
                 bounding_box: BoundingBox {
                     origin: Point {
-                        x: rng.random_range(0..self.width),
-                        y: rng.random_range(0..self.height),
+                        // max coordinate is the level size minus the room width/height, to make sure
+                        // that the room fits in the level.
+                        x: rng.random_range(0..self.width - width),
+                        y: rng.random_range(0..self.height - height),
                     },
                     rect: Rectangle { height, width },
                 },
             };
 
-            dbg!(room);
+            dbg!(&room);
 
             // debug: exit immediately
             tries = 999;

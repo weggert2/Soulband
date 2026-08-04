@@ -3,6 +3,7 @@ use macroquad::text::Font;
 use macroquad::texture::Texture2D;
 
 use crate::entity::Entity;
+use crate::level::{Level, TileType};
 
 /// Handles rendering of entities, tiles, and debug overlays
 pub struct Renderer {
@@ -123,6 +124,20 @@ impl Renderer {
                 ..Default::default()
             },
         );
+    }
+
+    pub fn draw_level(&self, level: &Level, use_graphics: bool) {
+        for y in 0..level.height {
+            for x in 0..level.width {
+                let tile_idx = (y * level.width * x) as usize;
+                let tile = &level.tiles[tile_idx];
+
+                let screen_x: f32 = x as f32 * self.game_tile_size;
+                let screen_y: f32 = y as f32 * self.game_tile_size;
+
+                // for now, don't use graphics.
+            }
+        }
     }
 
     /// Draws a debug grid overlay showing tile boundaries

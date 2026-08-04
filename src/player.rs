@@ -9,6 +9,7 @@ impl Player {
     pub fn new() -> Self {
         Player {
             entity: Entity {
+                // position coordinates
                 x: 10.0,
                 y: 10.0,
                 width: 1.0,
