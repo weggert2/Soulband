@@ -3,7 +3,9 @@ build
 # Editor-specific
 .vscode
 
-# Added by cargo
-
-/target
+# AI settings
 .claude
+.kiro
+
+# Added by cargo
+/target
