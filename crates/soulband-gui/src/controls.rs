@@ -2,6 +2,8 @@ use macroquad::input::KeyCode;
 use soulband_core::game_state::GameState;
 
 /// Handles keyboard input and updates game state accordingly
+///
+/// * `game` (`&mut GameState`) - The game state to update
 pub fn handle_input(game: &mut GameState) {
     let Some(key) = macroquad::input::get_last_key_pressed() else {
         return; // No key pressed, skip processing

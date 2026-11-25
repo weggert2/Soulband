@@ -8,6 +8,8 @@ use soulband_core::pos::Pos;
 use soulband_core::sprite::Rgb;
 
 /// Converts a frontend-independent colour into a macroquad colour (fully opaque).
+///
+/// * `rgb` (`Rgb`) - The colour to convert
 fn to_color(rgb: Rgb) -> macroquad::color::Color {
     macroquad::color::Color::from_rgba(rgb.r, rgb.g, rgb.b, 255)
 }
@@ -27,12 +29,10 @@ pub struct Renderer {
 impl Renderer {
     /// Creates a new Renderer
     ///
-    /// # Arguments
-    ///
-    /// * `game_tile_size` - Size of each tile in pixels (for our grid)
-    /// * `tileset_tile_size` - Size of each tile in the tileset texture
-    /// * `font` - Font to use for text rendering
-    /// * `tileset` - Texture containing the tile graphics
+    /// * `game_tile_size` (`f32`) - Size of each tile in pixels (for our grid)
+    /// * `tileset_tile_size` (`f32`) - Size of each tile in the tileset texture
+    /// * `font` (`Font`) - Font to use for text rendering
+    /// * `tileset` (`Texture2D`) - Texture containing the tile graphics
     pub fn new(
         game_tile_size: f32,
         tileset_tile_size: f32,
@@ -49,10 +49,8 @@ impl Renderer {
 
     /// Draws an entity at its grid position
     ///
-    /// # Arguments
-    ///
-    /// * `entity` - The entity to draw
-    /// * `use_graphics` - If true, use tileset; if false, use ASCII glyphs
+    /// * `entity` (`&Entity`) - The entity to draw
+    /// * `use_graphics` (`bool`) - If true, use tileset; if false, use ASCII glyphs
     pub fn draw_entity(&self, entity: &Entity, use_graphics: bool) {
         // World (tile) coordinates -> screen (pixel) coordinates.
         let screen_x: f32 = entity.pos.x as f32 * self.game_tile_size;
@@ -67,11 +65,9 @@ impl Renderer {
 
     /// Draws an entity's ASCII glyph centered within a tile
     ///
-    /// # Arguments
-    ///
-    /// * `entity` - The entity to draw (for sprite data)
-    /// * `screen_x` - X position on screen in pixels
-    /// * `screen_y` - Y position on screen in pixels
+    /// * `entity` (`&Entity`) - The entity to draw (for sprite data)
+    /// * `screen_x` (`f32`) - X position on screen in pixels
+    /// * `screen_y` (`f32`) - Y position on screen in pixels
     pub fn draw_glyph(&self, entity: &Entity, screen_x: f32, screen_y: f32) {
         let font_size: f32 = self.game_tile_size * entity.height as f32;
         let glyph_str: String = entity.sprite.glyph.to_string();
@@ -99,11 +95,9 @@ impl Renderer {
 
     /// Draws an entity's tile from the tileset to the screen
     ///
-    /// # Arguments
-    ///
-    /// * `entity` - The entity to draw (for sprite tile_id)
-    /// * `screen_x` - X position on screen in pixels
-    /// * `screen_y` - Y position on screen in pixels
+    /// * `entity` (`&Entity`) - The entity to draw (for sprite tile_id)
+    /// * `screen_x` (`f32`) - X position on screen in pixels
+    /// * `screen_y` (`f32`) - Y position on screen in pixels
     pub fn draw_tile(&self, entity: &Entity, screen_x: f32, screen_y: f32) {
         // Tileset is 8192 / 64 = 128 tiles per row
         let tiles_per_row: u32 = 128;
@@ -134,6 +128,10 @@ impl Renderer {
         );
     }
 
+    /// Draws every tile of the level (work in progress: tiles are looked up but not drawn yet)
+    ///
+    /// * `level` (`&Level`) - The level to draw
+    /// * `use_graphics` (`bool`) - If true, use tileset; if false, use ASCII glyphs
     pub fn draw_level(&self, level: &Level, use_graphics: bool) {
         for y in 0..level.height {
             for x in 0..level.width {

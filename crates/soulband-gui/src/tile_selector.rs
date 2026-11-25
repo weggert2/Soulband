@@ -1,5 +1,6 @@
 use macroquad::{color, input, text, texture, window};
 
+/// Entry point for the tile selector tool: browse the tileset and click a tile to see its tile_id
 #[macroquad::main("Tile Selector")]
 async fn main() {
     let tileset_tile_size: f32 = 64.0;

@@ -4,9 +4,7 @@ use macroquad::{color, text, window};
 
 /// Draws a centered loading screen with "Loading..." text
 ///
-/// # Arguments
-///
-/// * `font` - The font to use for rendering the loading text
+/// * `font` (`&Font`) - The font to use for rendering the loading text
 pub fn draw_loading_screen(font: &Font) {
     window::clear_background(color::BLACK);
 
@@ -36,9 +34,9 @@ pub fn draw_loading_screen(font: &Font) {
 /// The Quit option will immediately exit the application. Save and Load options
 /// are placeholders pending implementation of serialization system.
 ///
-/// # Arguments
-///
-/// * `use_graphics` - Current state of the use_graphics setting
+/// * `use_graphics` (`&mut bool`) - Current state of the use_graphics setting; toggled when the
+///   menu item is clicked
+/// * `use_fonts` (`bool`) - If true, switch egui to the JetBrains Mono font (configured once)
 pub fn draw_menu_bar(use_graphics: &mut bool, use_fonts: bool) {
     egui_macroquad::ui(|egui_ctx| {
         // Configure egui fonts on first call if use_fonts is true
@@ -76,6 +74,9 @@ pub fn draw_menu_bar(use_graphics: &mut bool, use_fonts: bool) {
     egui_macroquad::draw();
 }
 
+/// Switches egui to the JetBrains Mono font; only does the work on the first call
+///
+/// * `egui_ctx` (`&egui::Context`) - The egui context to configure
 fn load_fonts_once(egui_ctx: &egui::Context) {
     static FONTS_CONFIGURED: std::sync::atomic::AtomicBool =
         std::sync::atomic::AtomicBool::new(false);

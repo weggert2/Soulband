@@ -94,6 +94,10 @@ impl Level {
     const MIN_RECT_ROOM_SIZE: i32 = 4;
     const MAX_RECT_ROOM_SIZE: i32 = 12;
 
+    /// Creates an empty level of the given size, with no tiles or rooms until `generate` is called
+    ///
+    /// * `width` (`i32`) - Level width in tiles
+    /// * `height` (`i32`) - Level height in tiles
     pub fn new(width: i32, height: i32) -> Self {
         Level {
             width,
@@ -103,11 +107,14 @@ impl Level {
         }
     }
 
+    /// Creates an empty level using the default dimensions (`DEFAULT_WIDTH` × `DEFAULT_HEIGHT`)
     pub fn default_size() -> Self {
         Level::new(Self::DEFAULT_WIDTH, Self::DEFAULT_HEIGHT)
     }
 
     /// Returns true if `pos` is on the map.
+    ///
+    /// * `pos` (`Pos`) - The position to check
     pub fn in_bounds(&self, pos: Pos) -> bool {
         pos.x >= 0 && pos.x < self.width && pos.y >= 0 && pos.y < self.height
     }
@@ -116,6 +123,8 @@ impl Level {
     ///
     /// Tiles are stored row by row in one flat `Vec`: skip `y` full rows, then step `x` along.
     /// This is the only place that formula should appear.
+    ///
+    /// * `pos` (`Pos`) - The position to convert
     pub fn idx(&self, pos: Pos) -> Option<usize> {
         if self.in_bounds(pos) {
             Some((pos.y * self.width + pos.x) as usize)
@@ -129,9 +138,7 @@ impl Level {
     /// Existing tiles and rooms are cleared first, so this can be called
     /// repeatedly to regenerate a level in place.
     ///
-    /// # Arguments
-    ///
-    /// * `rng` - Seeded random number generator; the same seed produces the
+    /// * `rng` (`&mut StdRng`) - Seeded random number generator; the same seed produces the
     ///   same layout, which is what makes generation reproducible for testing.
     pub fn generate(&mut self, rng: &mut StdRng) {
         // Check invariants: the largest room plus a 1-tile wall border on each side must fit.
@@ -188,6 +195,7 @@ mod test {
 
     const DEFAULT_SEED: u64 = 0;
 
+    /// A default-size level has the default dimensions and no tiles or rooms before generation
     #[test]
     fn test_default_size() {
         let level: Level = Level::default_size();
@@ -197,6 +205,7 @@ mod test {
         assert_eq!(level.rooms.len(), 0);
     }
 
+    /// Generating a default-size level with a fixed seed doesn't panic
     #[test]
     fn test_generate() {
         let mut level: Level = Level::default_size();
@@ -204,6 +213,7 @@ mod test {
         level.generate(&mut rng);
     }
 
+    /// Corners are in bounds; one step past any edge is out of bounds
     #[test]
     fn test_in_bounds() {
         let level = Level::new(10, 5);
@@ -219,6 +229,7 @@ mod test {
         assert!(!level.in_bounds(Pos::new(0, 5)));
     }
 
+    /// Positions map to row-major indices; off-map positions give `None`
     #[test]
     fn test_idx() {
         let level = Level::new(10, 5);

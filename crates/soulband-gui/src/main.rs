@@ -7,6 +7,7 @@ mod renderer;
 // mod tile;
 mod ui;
 
+/// Entry point: loads assets, creates the level and game state, then runs the main loop
 #[macroquad::main("Soulband")]
 async fn main() {
     let debug: bool = true; // TODO: make configurable.

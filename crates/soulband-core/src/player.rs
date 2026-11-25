@@ -7,6 +7,7 @@ pub struct Player {
 }
 
 impl Player {
+    /// Creates a new player: a 1×1 white `@` at a fixed starting position
     pub fn new() -> Self {
         Player {
             entity: Entity {
