@@ -129,7 +129,7 @@ impl Renderer {
     pub fn draw_level(&self, level: &Level, use_graphics: bool) {
         for y in 0..level.height {
             for x in 0..level.width {
-                let tile_idx = (y * level.width * x) as usize;
+                let tile_idx = (y * level.width + x) as usize;
                 let tile = &level.tiles[tile_idx];
 
                 let screen_x: f32 = x as f32 * self.game_tile_size;

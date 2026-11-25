@@ -14,6 +14,11 @@ async fn main() {
         .await
         .expect("Failed to load tileset");
 
+    // Tileset dimensions in tiles, derived from the texture rather than hardcoded.
+    let tiles_per_row = (tileset.width() / tileset_tile_size) as u32;
+    let tile_rows = (tileset.height() / tileset_tile_size) as u32;
+    let max_tile_id = tiles_per_row * tile_rows - 1;
+
     // Center tileset vertically on screen
     let screen_w = window::screen_width();
     let screen_h = window::screen_height();
@@ -85,8 +90,12 @@ async fn main() {
             let tile_y = ((mouse_pos.1 - pan_y) / (tileset_tile_size * scale)).floor() as i32;
 
             // Check if click is within tileset bounds
-            if tile_x >= 0 && tile_x < 128 && tile_y >= 0 && tile_y < 32 {
-                selected_tile_id = (tile_y * 128 + tile_x) as u32;
+            if tile_x >= 0
+                && tile_x < tiles_per_row as i32
+                && tile_y >= 0
+                && tile_y < tile_rows as i32
+            {
+                selected_tile_id = tile_y as u32 * tiles_per_row + tile_x as u32;
             }
         }
 
@@ -124,24 +133,22 @@ async fn main() {
         let current_time = macroquad::time::get_time();
 
         if current_time - last_move_time >= move_delay && !shift_held {
-            if input::is_key_down(input::KeyCode::Right) {
+            if input::is_key_down(input::KeyCode::Right) && selected_tile_id < max_tile_id {
                 selected_tile_id += 1;
                 tile_changed = true;
             }
-            if input::is_key_down(input::KeyCode::Left) {
-                if selected_tile_id > 0 {
-                    selected_tile_id -= 1;
-                    tile_changed = true;
-                }
+            if input::is_key_down(input::KeyCode::Left) && selected_tile_id > 0 {
+                selected_tile_id -= 1;
+                tile_changed = true;
             }
-            if input::is_key_down(input::KeyCode::Up) {
-                if selected_tile_id >= 128 {
-                    selected_tile_id -= 128; // Jump up a row
-                    tile_changed = true;
-                }
+            if input::is_key_down(input::KeyCode::Up) && selected_tile_id >= tiles_per_row {
+                selected_tile_id -= tiles_per_row; // Jump up a row
+                tile_changed = true;
             }
-            if input::is_key_down(input::KeyCode::Down) {
-                selected_tile_id += 128; // Jump down a row
+            if input::is_key_down(input::KeyCode::Down)
+                && selected_tile_id + tiles_per_row <= max_tile_id
+            {
+                selected_tile_id += tiles_per_row; // Jump down a row
                 tile_changed = true;
             }
 
@@ -157,8 +164,8 @@ async fn main() {
             let base_scale = (screen_w / tileset_w).min(screen_h / tileset_h);
             let scale = base_scale * zoom;
 
-            let tile_x = (selected_tile_id % 128) as f32;
-            let tile_y = (selected_tile_id / 128) as f32;
+            let tile_x = (selected_tile_id % tiles_per_row) as f32;
+            let tile_y = (selected_tile_id / tiles_per_row) as f32;
             let tile_screen_x = pan_x + tile_x * tileset_tile_size * scale;
             let tile_screen_y = pan_y + tile_y * tileset_tile_size * scale;
             let tile_size_scaled = tileset_tile_size * scale;
@@ -200,8 +207,8 @@ async fn main() {
         );
 
         // Draw rectangle around selected tile
-        let tile_x = (selected_tile_id % 128) as f32;
-        let tile_y = (selected_tile_id / 128) as f32;
+        let tile_x = (selected_tile_id % tiles_per_row) as f32;
+        let tile_y = (selected_tile_id / tiles_per_row) as f32;
         let rect_x = pan_x + tile_x * tileset_tile_size * scale;
         let rect_y = pan_y + tile_y * tileset_tile_size * scale;
         let rect_size = tileset_tile_size * scale;

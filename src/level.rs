@@ -123,9 +123,9 @@ impl Level {
     /// * `rng` - Seeded random number generator; the same seed produces the
     ///   same layout, which is what makes generation reproducible for testing.
     pub fn generate(&mut self, rng: &mut StdRng) {
-        // Check invariants
-        assert!(Self::MAX_RECT_ROOM_SIZE < self.width);
-        assert!(Self::MAX_RECT_ROOM_SIZE < self.height);
+        // Check invariants: the largest room plus a 1-tile wall border on each side must fit.
+        assert!(Self::MAX_RECT_ROOM_SIZE + 2 <= self.width);
+        assert!(Self::MAX_RECT_ROOM_SIZE + 2 <= self.height);
 
         // Blow away all the tiles, replace with walls. We'll carve out rooms and hallways.
         self.tiles = vec![
@@ -153,10 +153,10 @@ impl Level {
                 theme: RoomTheme::Normal,
                 bounding_box: BoundingBox {
                     origin: Point {
-                        // max coordinate is the level size minus the room width/height, to make sure
-                        // that the room fits in the level.
-                        x: rng.random_range(0..self.width - width),
-                        y: rng.random_range(0..self.height - height),
+                        // Keep a 1-tile wall border around the map edge. The room spans
+                        // origin..origin + size - 1, so the origin must be in 1..=level_size - size - 1
+                        x: rng.random_range(1..self.width - width),
+                        y: rng.random_range(1..self.height - height),
                     },
                     rect: Rectangle { height, width },
                 },
