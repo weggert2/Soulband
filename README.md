@@ -9,8 +9,9 @@ Soulband is a turn-based roguelike where every decision matters. Navigate proced
 ### Key Features
 
 - **Classless character system** - Build emerges from stat allocation and equipment found
-- **Gold as dual currency** - Level up your stats *and* survive death penalties with the same resource
-- **Corpse run mechanics** - Die with enough gold and you can retrieve it from your corpse. Die broke and lose everything.
+- **Gold as dual currency** - Level up your stats *and* pay the death tax with the same resource
+- **Death tax** - Every death costs gold. Can't pay? You pay with stats. Run out of stats and the character dies for good.
+- **Corpse run mechanics** - Gold left over after the tax drops at your corpse; die again before retrieving it and it's gone.
 - **Tactical turn-based combat** - Multi-tile entities, status effects, and deliberate positioning
 - **Risk vs. reward** - Push deeper for better loot, or return to town and safety?
 

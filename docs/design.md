@@ -15,7 +15,16 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - **Unified currency (Gold)** used for:
   - Purchasing items from shops
   - Leveling up stats at bonfire/rest point
-- Currency drops when you die and must be retrieved
+  - Paying the death tax (see Death & the Death Tax)
+- Carried gold drops at your corpse when you die and must be retrieved
+- **Gems** - high-value loot that's only useful once you get it back to town
+  - Must be sold in town to become gold; can't be spent or used to pay the death tax in the dungeon
+  - Dropped at your corpse on death along with your gold
+  - **The only way to bank wealth**: gold can't be stored at home, but gems can
+    - Stockpile gems at home as insurance, then sell them to buy back lost stats or rebuild after a bad death
+    - Bringing a gem home safely is the payoff; finding one deep in the dungeon should be exciting and nerve-wracking
+  - No town jeweler: gold can never be converted into gems. The more you carry, the more you
+    stand to lose (the classic "oh no, I'm at a boss with too many souls" tension)
 
 **Late-Game Gold Sinks:**
 - **High-tier consumables** - powerful potions/elixirs that scale with character power
@@ -30,6 +39,8 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
     - Mid levels (+10 to +15): expensive
     - High levels (+20 to +21): ludicrously expensive
   - Forces strategic choice: spread enchantments across items or max out one piece?
+  - **Depth-gated**: maximum enchantment level is capped by your progress marker
+    (see Progression Gating), so gold farmed on shallow levels can't buy deep-game power
 - **Vault keys** - expensive keys purchased in town
   - Guarantee access to artifact vaults in the dungeon
   - High gold cost but reliable way to find powerful items
@@ -188,20 +199,21 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - **Typical frequency**: 0-2 vaults and 0-3 monster pits per level (configurable)
 
 **Dungeon Persistence & Corpse Runs:**
-- **Level persistence**: Up to 2 dungeon levels cached in memory
-  - **Last bonfire level**: The level containing the last bonfire you rested at
-  - **Death level**: The level where you died (contains your corpse)
-  - If both are the same level, only one level needs to be cached
-- **After death**, you respawn in town with 0 gold
-- **Corpse location**: Your gold remains at the exact spot you died
-- **Enemies respawn** on cached levels (full repopulation)
+- **All visited levels persist** (Brogue-style), not regenerated on each visit like Angband
+  - An 80×30 level is ~2,400 tiles, so keeping every level in memory and in the save file is cheap
+  - Persistence limits grinding: a level's loot and vaults are finite once looted
+  - Monsters still respawn when you rest at a bonfire (see Resources)
+- **Reality Warp scroll**: regenerates a level with a fresh layout, monsters, and loot
+  - Escape hatch for a looted-out or badly generated level
+  - (TBD: price/rarity, whether it can target a level holding your corpse or a lit bonfire)
+- **After death**, you respawn in town after paying the death tax (see Death & the Death Tax)
+- **Corpse location**: Your remaining carried gold and all carried gems stay at the exact spot you died
 - **Corpse run procedure**:
-  1. Use recall to return to your last dungeon bonfire
-  2. Navigate through respawned enemies to reach the level with your corpse
-  3. Retrieve corpse to recover all gold
-  4. High stakes: you're at 0 gold, one death away from run-over
-- **Level layouts persist** until corpse is retrieved or run ends
-- **New levels beyond cached ones** are generated normally if you descend further
+  1. Travel for free from town to any lit bonfire
+  2. Navigate through respawned enemies to reach your corpse
+  3. Retrieve corpse to recover the gold and gems
+  4. Die again before retrieving it and that gold is gone for good (Dark Souls rule)
+- **New levels** are generated when you first descend into them
 
 ### Loot & Equipment
 - **Artifacts** - unique powerful items with fixed properties (Angband style)
@@ -227,17 +239,20 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Prevents collecting everything to sell
   - Makes town trips more deliberate
 - **Primary gold sources**:
-  - **Gems** - valuable items that drop occasionally, exist purely to sell (various sizes/values)
-  - **Direct gold drops** - rare but meaningful
+  - **Monster gold drops** - the main source; killing things should pay
+    - Scales with monster level and depth
+    - Soft limit (Angband XP-style): `gold = base_gold × monster_level / player_level`,
+      so shallow monsters become nearly worthless as you level and farming them fades out
+  - **Gems** - drop occasionally, exist purely to sell in town (various sizes/values); dropped at your corpse on death
   - **Vault treasures** - high-value items found in dangerous vaults
   - **Quest rewards** (if quests exist in the design)
 - **Depth-based vendor value** - vendor prices scale with dungeon depth
   - Early dungeon items (levels 1-10): sell for 5-20 gold (almost worthless)
   - Mid dungeon items (levels 20-30): sell for 100-500 gold
   - Deep dungeon items (levels 40+): sell for 1,000+ gold
-  - Scaling matches the gold threshold progression
+  - Scaling matches the leveling cost and death tax progression
   - Rewards risk-taking: going deep yields meaningful vendor income
-  - Early grinding can't easily maintain late-game thresholds
+  - Early grinding can't easily keep up with late-game death taxes
 
 ### Combat & Resources
 
@@ -284,11 +299,20 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Used for leveling up stats (spending gold)
   - **Bonfires exist in town and throughout dungeon levels**
   - **1-2 bonfires per dungeon level**, randomly placed
-  - (TBD: Are bonfires pre-placed but inactive until area is cleared, or always active?)
-- **Recall mechanics** (scroll or ability):
-  - **From dungeon → town**: Returns you to town bonfire
-  - **From town → dungeon**: Returns you to last bonfire rested at in dungeon
-  - Enables strategic back-and-forth: delve deep, recall to town to shop/bank, recall back to continue
+  - Bonfires are always active: resting at one lights it (level conquest is a separate, future idea; see Progression Gating)
+- **Bonfire travel** (free):
+  - Resting at a dungeon bonfire lights it; lit bonfires stay lit (levels persist)
+  - From town or any lit bonfire, travel for free to town or any other lit bonfire
+  - **Normally the only way back to town is through a bonfire**
+  - Getting deep means you also have to find your way back out: finding the next bonfire is a goal in itself
+- **Return-to-town items** (very rare or very expensive, like Dark Souls):
+  - Dark Souls has two: the Homeward Bone (consumable, returns you to your last bonfire) and the
+    Darksign (reusable, returns you to your last bonfire but you lose your carried souls).
+    Elden Ring's equivalent of the Darksign is the Memory of Grace (lose all held runes)
+  - Soulband options (TBD, could have one or both):
+    - **Recall scroll**: return to town; very rare or very expensive
+    - **Darksign-style item**: return to town from anywhere, but everything you're carrying is destroyed (gold and gems, no corpse)
+  - An emergency escape with a real price, not a convenience
 - Strategic resource management required
 
 **Status Effects & Buildup System** (inspired by Dark Souls):
@@ -358,44 +382,76 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - **The Level-Up Dilemma**:
   - Each level makes you stronger
   - But raises the cost for future levels
-  - AND increases the gold threshold required to survive death
+  - AND increases the death tax
   - Over-leveling becomes a strategic risk
 
-### Death & Run Termination
+**Progression Gating (anti-grinding):**
+- Goal: prevent "farm shallow levels for hours, buy everything, then dive"
+- **Progress marker**: the deepest bonfire you've rested at
+  - Not deepest depth visited, otherwise players stair-dive to unlock caps and then return to farm
+    (chasm falls would also unlock caps by accident)
+  - Alternative to consider: deepest boss killed
+- **Readiness tracking** (post-MVP, maybe):
+  - Hidden tracking of how long/how much you've actually played at a depth (turns spent, monsters killed)
+  - Prevents dive → find bonfire → unlock caps; you should actually be ready for the level
+  - Concern: might feel too anti-player, especially if hidden. Revisit after playtesting the basic version
+- **Level conquest** (future consideration, possibly replaces hidden readiness tracking):
+  - Lighting a bonfire and conquering a level are separate
+    - **Lighting**: just rest at the bonfire; unlocks free travel to it
+    - **Conquering**: an "I did it" marker for the level that drives the hard caps instead of bonfires
+  - Conquest trigger TBD: a certain number of kills, a miniboss, or something else
+  - Visible to the player, unlike hidden readiness tracking, so it's a goal to work toward rather than a hidden gate
+- **Soft limit**: monster gold scales with `monster_level / player_level` (see Loot Economy),
+  combined with exponential leveling costs, so shallow farming slows to a crawl on its own
+- **Hard caps** tied to the progress marker:
+  - Maximum enchantment level (e.g., +1 per 5 depth levels, exact ratio TBD)
+  - Shop stock tiers (better items unlock as you go deeper)
+  - Character level: soft limit first; add a hard cap only if playtesting shows it's needed
 
-**Normal Death (gold >= threshold):**
-- **Respawn in town** with 0 gold
-- **Keep all equipment** - armor, weapons, items in inventory
-- **Drop ALL gold** at death location (corpse)
-- Must retrieve corpse to recover gold
-- Corpse run is dangerous - you're at 0 gold, one death from game over
+### Death & the Death Tax
 
-**Run-Over Death (gold < threshold):**
+Every death has a cost: the **death tax**. You pay it with gold if you can and with stats if you can't. The run only ends when your stats run out.
+
+**On death:**
+1. **Death tax is assessed** - exponential scaling tied to character level (formula TBD, similar curve to leveling costs)
+2. **Paid from carried gold first**
+3. **Remaining carried gold and all carried gems drop at your corpse** - retrieve them on a corpse run; die again first and they're gone
+4. **Shortfall is paid in stats** - if carried gold doesn't cover the tax, the remainder is taken as stat points
+   - Every stat point has a gold value (TBD: e.g., the price you paid for it, or the current level-up cost)
+5. **Permadeath (D&D rule)** - if paying the tax would push any stat below zero, the character dies for good
+6. **Respawn in town** - keep all equipment and inventory items (gold and gems stay with the corpse)
+
+**What survives a normal death:**
+- Equipment and inventory items
+- Home storage (including any gems stored there)
+- Lit bonfires and explored levels
+
+**Restoring lost stats:**
+- Lost stat points can be bought back at a bonfire
+- (TBD: discount vs. buying them the first time? A discount softens a bad streak; full price keeps deaths painful)
+
+**Permadeath (stats exhausted):**
 - **Game Over** - the run ends
-- **Lose everything** - all equipment, items, and character progress
+- **Lose everything** - all equipment, items, home storage, and character progress
 - Start a completely new run from scratch
 
-**Gold Threshold System:**
-- **Exponential scaling** tied to character level (exact formula TBD)
-- Threshold scales similarly to leveling costs
-  - Low levels: manageable threshold (e.g., 500-1000 gold)
-  - High levels: dangerous threshold (e.g., 20,000+ gold)
-- Creates multiple layers of tension:
-  - Spend gold on items/enchantments to get stronger (but lower your safety net)
-  - Hoard gold for safety (but stay weaker and miss opportunities)
-  - Level up for stats (but increase the threshold you must maintain)
-  - Splurge on vault keys or black market items (high risk, high reward)
-- After any death, you're at 0 gold until you recover your corpse
+**Why this works:**
+- Rarely an instant game over - a broke death costs stats, not the run
+- But a string of broke deaths grinds your character down until it dies for real
+- Starting stat values are a tuning lever: they set how many broke deaths a new character can absorb
+- Leveling is still double-edged: more stats, but a bigger tax on every death
 
 **Banking & Storage:**
 - **Cannot bank gold** - all gold must be carried
+- **No converting gold into gems** - there's no jeweler; wealth you carry is wealth at risk
+- **Gems in home storage are the only banked wealth** - you have to find them and carry them home first
 - **Home storage in town** - chest/stash in your home
   - Limited to **50-75 item slots** (exact number TBD)
   - Free to deposit and withdraw
   - Can store anything: artifacts, equipment, consumables, gems
   - Accessible anytime you're in town
-- **Storage is per-run only** - completely wiped on run-over death
-  - Does NOT provide insurance against run-over
+- **Storage is per-run only** - completely wiped on permadeath
+  - Does NOT protect against permadeath
   - Purely for inventory management within a single run
   - Useful for stashing artifacts you're not using yet, backup equipment, valuable gems before risky dives
 - **Items have weight values** (for potential future weight-based mechanics)
@@ -403,16 +459,15 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
   - Weight may be used for carrying capacity or other mechanics later
 
 **Strategic Implications:**
-- Every death puts you at immediate risk (0 gold = one death from game over)
-- Corpse runs are high-stakes: recover everything or potentially lose the run
-- **Leveling up is a double-edged sword**: stronger stats vs. higher death threshold
-- Over-leveling can price you out of safety - maintaining 50K gold is much harder than 1K
-- Low-level challenge runs become viable strategy (keep threshold manageable)
-- Equipment and artifacts become relatively more valuable (they don't raise threshold)
-- Converting gold into banked items/equipment is a form of risk mitigation
-- **Late-game gold sinks create constant temptation**: vault key now or save for safety?
+- Carrying gold is your buffer against stat loss, but carried gold is also what you lose on a failed corpse run
+- Gems are at risk until you bring them home, then they're your only insurance: a stockpile at home lets you recover from a broke death
+- The more you carry, the more you stand to lose: reaching a boss loaded with gold and gems is a real dilemma
+- Recall is rare or costly, so every dive is also a search for the next bonfire
+- **Leveling up is a double-edged sword**: stronger stats vs. a bigger death tax
+- Equipment and artifacts don't raise the death tax, but progression gating keeps them from replacing leveling entirely
+- **Late-game gold sinks create constant temptation**: vault key now, or keep enough gold to cover the tax?
 - Black market ultra-rares are always optional but potentially game-changing
-- Grinding lower levels for safety still works, but you can't out-level the risk entirely
+- Grinding shallow levels is slowed by the soft limit and capped by the hard caps (see Progression Gating)
 
 ---
 
@@ -476,7 +531,7 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 - Reward scales with offering amount
 - Can lose your gold for nothing
 - Can win rare items or massive gold multiplier
-- Tension with death threshold system (spend safety net for potential gain?)
+- Tension with the death tax (spend the gold that would cover your next death for a potential gain?)
 
 **Implementation Notes**:
 - Shrines are world objects placed during level generation
@@ -496,17 +551,40 @@ Merge the deep dungeon exploration and mythology of Angband with the deliberate 
 
 ## Open Questions
 
-### Leveling & Threshold Formulas
-- **Confirmed**: Both leveling costs and gold threshold use exponential scaling
+### Leveling & Death Tax Formulas
+- **Confirmed**: Both leveling costs and the death tax use exponential scaling tied to character level
 - What are the exact formulas?
   - Leveling cost formula? (inspired by Dark Souls curve)
-  - Death threshold formula? (should scale similarly to leveling costs)
-- Should threshold be a percentage of leveling cost? Or independent curve?
-- Should threshold account for dungeon depth as well as character level?
+  - Death tax formula? (should scale similarly to leveling costs)
+- Should the death tax be a percentage of the current leveling cost, or an independent curve?
 - Example target values needed:
-  - Level 1-10: threshold range?
-  - Level 20-30: threshold range?
-  - Level 50+: threshold range?
+  - Level 1-10: death tax range?
+  - Level 20-30: death tax range?
+  - Level 50+: death tax range?
+
+### Death Tax & Stat Loss
+- How is a stat point valued in gold? (price originally paid? current level-up cost?)
+- Which stat pays the shortfall? Player's choice, random, or highest stat first?
+- Does losing a stat point also lower character level? (That would lower the next death tax,
+  making a broke-death spiral partly self-correcting)
+- Do lost stats cost less to restore than buying them the first time?
+- Starting stat values: how many broke deaths should a fresh character survive?
+
+### Gems
+- Gem sizes/values and how they scale with depth
+
+### Return-to-Town Items
+- Recall scroll, Darksign-style item, or both?
+- How rare/expensive? Does the Darksign-style item forfeit gold only, or gold and gems?
+
+### Level Conquest
+- What conquers a level: kill count, miniboss, clearing an area, something else?
+- Does conquest replace "deepest bonfire rested at" as the progress marker?
+
+### Level Persistence & Reality Warp
+- Reality Warp price and rarity
+- Can Reality Warp target a level containing your corpse or a lit bonfire? What happens to them?
+- Save file size and format once many levels persist
 
 ### Enchantment System
 - **Confirmed**: Exponential cost scaling per enhancement level
@@ -662,7 +740,8 @@ Inspired by Brogue's emergent environmental gameplay:
 - `wizard_set_speed <N>` - Modify player speed stat
 - `wizard_heal_full` - Restore full HP and mana
 - `wizard_kill_player` - Instantly kill the player (test death mechanics)
-- `wizard_set_threshold <amount>` - Manually set death gold threshold
+- `wizard_set_death_tax <amount>` - Override the death tax (test gold vs. stat payment)
+- `wizard_set_progress_depth <N>` - Set the progress marker (test hard caps)
 - `wizard_toggle_immortal` - Toggle invulnerability
 
 **Status Effects & Combat:**
@@ -693,6 +772,7 @@ Inspired by Brogue's emergent environmental gameplay:
 **Corpse Run & Death Testing:**
 - `wizard_spawn_corpse <gold>` - Place test corpse with specific gold amount
 - `wizard_force_death` - Trigger death sequence with current gold
+- `wizard_drain_stats` - Drop all stats to the edge of permadeath (test the D&D rule)
 - `wizard_clear_corpse` - Remove existing corpse
 - `wizard_goto_last_bonfire` - Teleport to last rested bonfire
 
@@ -858,8 +938,9 @@ Inspired by Brogue's emergent environmental gameplay:
 - **Tactical combat** - every encounter matters
 - **Risk vs. reward** - push deeper or return to safety?
 - **Gold as dual currency** - simultaneously your progression path and your lifeline
-- **Exponential consequences** - leveling up makes you stronger but raises the stakes
-- **No safe over-leveling** - you can't grind your way to safety, threshold keeps scaling
+- **Every death has a cost** - pay the death tax in gold, or pay it in stats
+- **Exponential consequences** - leveling up makes you stronger but raises the death tax
+- **No grinding your way to power** - soft limits slow shallow farming, depth-based hard caps stop it
 - **Classless freedom** - your build emerges organically from stat choices and equipment found
 - **Stat requirements create specialization** - can't use everything, must commit to a build
 - **Vulnerable corpse runs** - the most dangerous moment is right after death
