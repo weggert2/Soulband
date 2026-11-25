@@ -41,6 +41,21 @@ sudo apt-get install libasound2-dev libx11-dev libxi-dev libgl1-mesa-dev pkg-con
 cargo run --release
 ```
 
+## Project Layout
+
+```
+crates/
+  soulband-core/   Game logic library: levels, entities, rules. No windowing, input, or rendering,
+                   and macroquad is deliberately not a dependency, so the compiler keeps it that way.
+  soulband-gui/    macroquad frontend: window, input, rendering. Builds the `soulband` game binary
+                   and the `tile_selector` tool.
+assets/            Fonts and tileset (shared by the workspace)
+docs/              Design docs, todo list, devlog
+coderef/           Reference roguelikes (git submodules)
+```
+
+Run tests for every crate with `cargo test` from the root.
+
 ## Development
 
 ### VSCode Setup

@@ -1,21 +1,15 @@
-[package]
-name = "soulband"
+# Virtual workspace: no package lives at the root, every crate is under crates/.
+#   soulband-core - game logic library (no windowing, input, or rendering)
+#   soulband-gui  - macroquad frontend; builds the `soulband` and `tile_selector` binaries
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+# Shared by every crate via `version.workspace = true` / `edition.workspace = true`.
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
-default-run = "soulband"
 
-[[bin]]
-name = "soulband"
-path = "src/main.rs"
-
-[[bin]]
-name = "tile_selector"
-path = "src/tile_selector.rs"
-
-[dependencies]
-macroquad = "0.4"
-
-# egui-macroquad audio is disabled because WSL2 lacks native audio support, causing ALSA errors at
-# runtime. default-features = false only disables audio feature (see egui-macroquad Cargo.toml)
-egui-macroquad = { version = "0.17", default-features = false }
+# Shared dependency versions, so all crates use the same rand.
+[workspace.dependencies]
 rand = "0.10.2"

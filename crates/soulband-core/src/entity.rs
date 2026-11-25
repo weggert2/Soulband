@@ -1,5 +1,3 @@
-#![allow(dead_code)] // TODO: remove
-
 use crate::pos::Pos;
 use crate::sprite::Sprite;
 

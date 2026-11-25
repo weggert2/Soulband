@@ -1,0 +1,10 @@
+[package]
+name = "soulband-core"
+version.workspace = true
+edition.workspace = true
+
+# Pure game logic: no windowing, input, or rendering.
+# Do NOT add macroquad (or any other frontend crate) here. Keeping it out of this file is what
+# lets the compiler enforce the separation: `use macroquad::...` in this crate won't compile.
+[dependencies]
+rand = { workspace = true }

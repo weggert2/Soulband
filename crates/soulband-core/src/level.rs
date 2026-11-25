@@ -1,5 +1,3 @@
-#![allow(dead_code)] // TODO: remove
-
 use rand::rngs::StdRng;
 use rand::RngExt;
 

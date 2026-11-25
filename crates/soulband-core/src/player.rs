@@ -1,6 +1,6 @@
 use crate::entity::Entity;
 use crate::pos::Pos;
-use crate::sprite::Sprite;
+use crate::sprite::{Rgb, Sprite};
 
 pub struct Player {
     pub entity: Entity,
@@ -15,7 +15,7 @@ impl Player {
                 height: 1,
                 sprite: Sprite {
                     glyph: '@',
-                    color: macroquad::color::WHITE,
+                    color: Rgb::WHITE,
                     tile_id: 391,
                 },
             },

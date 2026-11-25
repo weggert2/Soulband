@@ -7,7 +7,7 @@
 **Current Phase: Phase 1 - Rectangular Rooms Only (MVP)**
 
 **WHERE WE LEFT OFF (April 15, 2026):**
-We completed the design phase and are ready to start coding. Next step: implement basic types in `src/level.rs` ONE STRUCT AT A TIME (going slow so user can learn).
+We completed the design phase and are ready to start coding. Next step: implement basic types in `crates/soulband-core/src/level.rs` ONE STRUCT AT A TIME (going slow so user can learn).
 
 Start with:
 1. TileType enum (Wall, Floor)
@@ -20,7 +20,7 @@ Start with:
 8. Level generation algorithm
 
 **Implementation checklist:**
-- [ ] Create `src/level.rs` module
+- [ ] Create `crates/soulband-core/src/level.rs` module
 - [ ] Implement TileType enum
 - [ ] Implement Tile struct
 - [ ] Implement GeometricShape enum (Rectangle only for now)

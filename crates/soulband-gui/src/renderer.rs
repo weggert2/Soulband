@@ -2,9 +2,15 @@ use macroquad::shapes;
 use macroquad::text::Font;
 use macroquad::texture::Texture2D;
 
-use crate::entity::Entity;
-use crate::level::{Level, TileType};
-use crate::pos::Pos;
+use soulband_core::entity::Entity;
+use soulband_core::level::{Level, TileType};
+use soulband_core::pos::Pos;
+use soulband_core::sprite::Rgb;
+
+/// Converts a frontend-independent colour into a macroquad colour (fully opaque).
+fn to_color(rgb: Rgb) -> macroquad::color::Color {
+    macroquad::color::Color::from_rgba(rgb.r, rgb.g, rgb.b, 255)
+}
 
 /// Handles rendering of entities, tiles, and debug overlays
 pub struct Renderer {
@@ -85,7 +91,7 @@ impl Renderer {
             macroquad::text::TextParams {
                 font: Some(&self.font),
                 font_size: font_size as u16,
-                color: entity.sprite.color,
+                color: to_color(entity.sprite.color),
                 ..Default::default()
             },
         );

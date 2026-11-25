@@ -950,12 +950,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "soulband"
+name = "soulband-core"
+version = "0.1.0"
+dependencies = [
+ "rand",
+]
+
+[[package]]
+name = "soulband-gui"
 version = "0.1.0"
 dependencies = [
  "egui-macroquad",
  "macroquad",
  "rand",
+ "soulband-core",
 ]
 
 [[package]]

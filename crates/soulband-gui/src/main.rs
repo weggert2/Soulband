@@ -1,13 +1,9 @@
 use macroquad::{color, input, text, texture, window};
 use rand::{rngs::StdRng, SeedableRng};
+use soulband_core::{game_state, level, player};
 
-mod entity;
-mod game_state;
-mod level;
-mod player;
-mod pos;
+mod controls;
 mod renderer;
-mod sprite;
 // mod tile;
 mod ui;
 
@@ -22,10 +18,11 @@ async fn main() {
     let game_tile_size: f32 = 32.0;
     let tileset_tile_size: f32 = 64.0;
 
-    // Load font.
+    // Load font. The path is relative to this crate (crates/soulband-gui), so step up to the
+    // shared assets/ folder at the workspace root.
     let font = text::load_ttf_font_from_bytes(include_bytes!(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/assets/fonts/ttf/JetBrainsMono-Regular.ttf"
+        "/../../assets/fonts/ttf/JetBrainsMono-Regular.ttf"
     )))
     .expect("Failed to load font");
 
@@ -58,7 +55,7 @@ async fn main() {
     loop {
         window::clear_background(color::BLACK);
 
-        game_state.handle_input();
+        controls::handle_input(&mut game_state);
         renderer.draw_entity(&game_state.player.entity, use_graphics);
 
         if debug {

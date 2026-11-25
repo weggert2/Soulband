@@ -88,7 +88,7 @@ fn load_fonts_once(egui_ctx: &egui::Context) {
             "jetbrains".to_owned(),
             egui::FontData::from_static(include_bytes!(concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/assets/fonts/ttf/JetBrainsMono-Regular.ttf"
+                "/../../assets/fonts/ttf/JetBrainsMono-Regular.ttf"
             )))
             .into(),
         );
