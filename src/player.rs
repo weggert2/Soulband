@@ -1,4 +1,5 @@
 use crate::entity::Entity;
+use crate::pos::Pos;
 use crate::sprite::Sprite;
 
 pub struct Player {
@@ -9,11 +10,9 @@ impl Player {
     pub fn new() -> Self {
         Player {
             entity: Entity {
-                // position coordinates
-                x: 10.0,
-                y: 10.0,
-                width: 1.0,
-                height: 1.0,
+                pos: Pos::new(10, 10),
+                width: 1,
+                height: 1,
                 sprite: Sprite {
                     glyph: '@',
                     color: macroquad::color::WHITE,

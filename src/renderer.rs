@@ -4,6 +4,7 @@ use macroquad::texture::Texture2D;
 
 use crate::entity::Entity;
 use crate::level::{Level, TileType};
+use crate::pos::Pos;
 
 /// Handles rendering of entities, tiles, and debug overlays
 pub struct Renderer {
@@ -47,8 +48,9 @@ impl Renderer {
     /// * `entity` - The entity to draw
     /// * `use_graphics` - If true, use tileset; if false, use ASCII glyphs
     pub fn draw_entity(&self, entity: &Entity, use_graphics: bool) {
-        let screen_x: f32 = entity.x * self.game_tile_size;
-        let screen_y: f32 = entity.y * self.game_tile_size;
+        // World (tile) coordinates -> screen (pixel) coordinates.
+        let screen_x: f32 = entity.pos.x as f32 * self.game_tile_size;
+        let screen_y: f32 = entity.pos.y as f32 * self.game_tile_size;
 
         if use_graphics {
             self.draw_tile(entity, screen_x, screen_y);
@@ -65,7 +67,7 @@ impl Renderer {
     /// * `screen_x` - X position on screen in pixels
     /// * `screen_y` - Y position on screen in pixels
     pub fn draw_glyph(&self, entity: &Entity, screen_x: f32, screen_y: f32) {
-        let font_size: f32 = self.game_tile_size * entity.height;
+        let font_size: f32 = self.game_tile_size * entity.height as f32;
         let glyph_str: String = entity.sprite.glyph.to_string();
 
         let text_dimensions: macroquad::text::TextDimensions =
@@ -129,7 +131,8 @@ impl Renderer {
     pub fn draw_level(&self, level: &Level, use_graphics: bool) {
         for y in 0..level.height {
             for x in 0..level.width {
-                let tile_idx = (y * level.width + x) as usize;
+                let pos = Pos::new(x, y);
+                let tile_idx = level.idx(pos).expect("loop stays within level bounds");
                 let tile = &level.tiles[tile_idx];
 
                 let screen_x: f32 = x as f32 * self.game_tile_size;

@@ -22,9 +22,9 @@ impl GameState {
         }
         let key = key.unwrap();
 
-        let mut move_player = |dx: f32, dy: f32| {
-            self.player.entity.x += dx;
-            self.player.entity.y += dy;
+        let mut move_player = |dx: i32, dy: i32| {
+            self.player.entity.pos.x += dx;
+            self.player.entity.pos.y += dy;
         };
 
         use KeyCode::*;
@@ -33,14 +33,14 @@ impl GameState {
             // q w e       7 8 9
             // a . d       4 5 6
             // z s c       1 2 3
-            W | Kp8 | Up => move_player(0.0, -1.0),   // Up
-            S | Kp2 | Down => move_player(0.0, 1.0),  // Down
-            A | Kp4 | Left => move_player(-1.0, 0.0), // Left
-            D | Kp6 | Right => move_player(1.0, 0.0), // Right
-            Q | Kp7 => move_player(-1.0, -1.0),       // Up Left
-            E | Kp9 => move_player(1.0, -1.0),        // Up Right
-            Z | Kp1 => move_player(-1.0, 1.0),        // Down Left
-            C | Kp3 => move_player(1.0, 1.0),         // Down Right
+            W | Kp8 | Up => move_player(0, -1),   // Up
+            S | Kp2 | Down => move_player(0, 1),  // Down
+            A | Kp4 | Left => move_player(-1, 0), // Left
+            D | Kp6 | Right => move_player(1, 0), // Right
+            Q | Kp7 => move_player(-1, -1),       // Up Left
+            E | Kp9 => move_player(1, -1),        // Up Right
+            Z | Kp1 => move_player(-1, 1),        // Down Left
+            C | Kp3 => move_player(1, 1),         // Down Right
 
             // Wait/pass turn
             Space | Period | Kp5 => {

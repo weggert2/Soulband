@@ -5,6 +5,7 @@ mod entity;
 mod game_state;
 mod level;
 mod player;
+mod pos;
 mod renderer;
 mod sprite;
 // mod tile;

@@ -3,6 +3,8 @@
 use rand::rngs::StdRng;
 use rand::RngExt;
 
+use crate::pos::Pos;
+
 /// type of terrain for a tile
 #[derive(Clone, Copy)]
 pub enum TileType {
@@ -19,28 +21,22 @@ pub struct Tile {
 }
 
 #[derive(Debug)]
-pub struct Point {
-    pub x: u32,
-    pub y: u32,
-}
-
-#[derive(Debug)]
 pub struct Rectangle {
-    pub width: u32,
-    pub height: u32,
+    pub width: i32,
+    pub height: i32,
 }
 
 #[derive(Debug)]
 pub struct Circle {
-    pub radius: u32,
+    pub radius: i32,
 }
 
 #[derive(Debug)]
 pub struct Cross {
-    pub horizontal_width: u32,
-    pub horizontal_height: u32,
-    pub vertical_width: u32,
-    pub vertical_height: u32,
+    pub horizontal_width: i32,
+    pub horizontal_height: i32,
+    pub vertical_width: i32,
+    pub vertical_height: i32,
 }
 
 #[derive(Debug)]
@@ -71,7 +67,7 @@ pub enum RoomTheme {
 
 #[derive(Debug)]
 pub struct BoundingBox {
-    pub origin: Point,
+    pub origin: Pos,
     pub rect: Rectangle,
 }
 
@@ -84,23 +80,23 @@ pub struct Room {
 }
 
 pub struct Level {
-    pub width: u32,
-    pub height: u32,
+    pub width: i32,
+    pub height: i32,
     pub tiles: Vec<Tile>,
     pub rooms: Vec<Room>,
 }
 
 impl Level {
     // TODO: make these configurable.
-    const DEFAULT_WIDTH: u32 = 80;
-    const DEFAULT_HEIGHT: u32 = 30;
+    const DEFAULT_WIDTH: i32 = 80;
+    const DEFAULT_HEIGHT: i32 = 30;
     const MAX_ROOMS: u32 = 20;
 
     // Max size for height and width of a rectangular room
-    const MIN_RECT_ROOM_SIZE: u32 = 4;
-    const MAX_RECT_ROOM_SIZE: u32 = 12;
+    const MIN_RECT_ROOM_SIZE: i32 = 4;
+    const MAX_RECT_ROOM_SIZE: i32 = 12;
 
-    pub fn new(width: u32, height: u32) -> Self {
+    pub fn new(width: i32, height: i32) -> Self {
         Level {
             width,
             height,
@@ -111,6 +107,23 @@ impl Level {
 
     pub fn default_size() -> Self {
         Level::new(Self::DEFAULT_WIDTH, Self::DEFAULT_HEIGHT)
+    }
+
+    /// Returns true if `pos` is on the map.
+    pub fn in_bounds(&self, pos: Pos) -> bool {
+        pos.x >= 0 && pos.x < self.width && pos.y >= 0 && pos.y < self.height
+    }
+
+    /// Converts a grid position into an index into `tiles`, or `None` if it's off the map.
+    ///
+    /// Tiles are stored row by row in one flat `Vec`: skip `y` full rows, then step `x` along.
+    /// This is the only place that formula should appear.
+    pub fn idx(&self, pos: Pos) -> Option<usize> {
+        if self.in_bounds(pos) {
+            Some((pos.y * self.width + pos.x) as usize)
+        } else {
+            None
+        }
     }
 
     /// Generates the level's layout: fills the grid with walls, then carves rooms.
@@ -144,15 +157,15 @@ impl Level {
         let room_id: u32 = 0;
 
         while rooms_placed < Self::MAX_ROOMS && tries < max_tries {
-            let height: u32 = rng.random_range(Self::MIN_RECT_ROOM_SIZE..=Self::MAX_RECT_ROOM_SIZE);
-            let width: u32 = rng.random_range(Self::MIN_RECT_ROOM_SIZE..=Self::MAX_RECT_ROOM_SIZE);
+            let height: i32 = rng.random_range(Self::MIN_RECT_ROOM_SIZE..=Self::MAX_RECT_ROOM_SIZE);
+            let width: i32 = rng.random_range(Self::MIN_RECT_ROOM_SIZE..=Self::MAX_RECT_ROOM_SIZE);
 
             let room: Room = Room {
                 id: room_id,
                 shape: RoomShape::Geometric(GeometricShape::Rectangle(Rectangle { height, width })),
                 theme: RoomTheme::Normal,
                 bounding_box: BoundingBox {
-                    origin: Point {
+                    origin: Pos {
                         // Keep a 1-tile wall border around the map edge. The room spans
                         // origin..origin + size - 1, so the origin must be in 1..=level_size - size - 1
                         x: rng.random_range(1..self.width - width),
@@ -191,5 +204,34 @@ mod test {
         let mut level: Level = Level::default_size();
         let mut rng: StdRng = StdRng::seed_from_u64(DEFAULT_SEED);
         level.generate(&mut rng);
+    }
+
+    #[test]
+    fn test_in_bounds() {
+        let level = Level::new(10, 5);
+
+        // Corners are on the map.
+        assert!(level.in_bounds(Pos::new(0, 0)));
+        assert!(level.in_bounds(Pos::new(9, 4)));
+
+        // One step past any edge is off the map.
+        assert!(!level.in_bounds(Pos::new(-1, 0)));
+        assert!(!level.in_bounds(Pos::new(0, -1)));
+        assert!(!level.in_bounds(Pos::new(10, 0)));
+        assert!(!level.in_bounds(Pos::new(0, 5)));
+    }
+
+    #[test]
+    fn test_idx() {
+        let level = Level::new(10, 5);
+
+        assert_eq!(level.idx(Pos::new(0, 0)), Some(0));
+        assert_eq!(level.idx(Pos::new(9, 0)), Some(9)); // end of first row
+        assert_eq!(level.idx(Pos::new(0, 1)), Some(10)); // start of second row
+        assert_eq!(level.idx(Pos::new(3, 2)), Some(23)); // 2 * 10 + 3
+        assert_eq!(level.idx(Pos::new(9, 4)), Some(49)); // last tile
+
+        assert_eq!(level.idx(Pos::new(-1, 0)), None);
+        assert_eq!(level.idx(Pos::new(10, 0)), None);
     }
 }
